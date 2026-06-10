@@ -1,0 +1,184 @@
+// prisma/schema.prisma
+
+datasource db {
+  provider = "mongodb"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum UserRole {
+  STAF_PENGINPUT
+  STAF_PENELITI
+  STAF_PENGARSIP
+  STAF_PENGIRIM
+  STAF_PEMANTAU
+  SUPERVISOR
+}
+
+enum ServiceType {
+  OBJEK_PAJAK_BARU
+  MUTASI_SEBAGIAN
+  MUTASI_HABIS_UPDATE
+  MUTASI_HABIS_REGULER
+  PEMBETULAN
+  PENGAKTIFAN
+}
+
+enum ApplicationStatus {
+  SUBMITTED
+  REVISION
+  REJECTED
+  REJECTED_PERMANENT
+  DRAFT_BUNDLE
+  READY_TO_ARCHIVE
+  RE_EXAMINE
+  READY_TO_SHIP
+  SENT_TO_CENTER
+  COMPLETED
+}
+
+enum BundleStatus {
+  DRAFT_BUNDLE
+  READY_TO_ARCHIVE
+  RE_EXAMINE
+  READY_TO_SHIP
+  SENT_TO_CENTER
+  COMPLETED
+}
+
+enum ManifestStatus {
+  DRAFT
+  WAITING_SIGNATURE
+  APPROVED
+}
+
+model User {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String   @unique
+  username      String   @unique
+  passwordHash  String
+  role          UserRole
+  phoneNumber   String?
+  isActive      Boolean  @default(true)
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
+model Permohonan {
+  id                      String   @id @default(auto()) @map("_id") @db.ObjectId
+  nomorBerkas             String   @unique
+  serviceType             ServiceType
+  status                  ApplicationStatus
+  nomorPelayan            String?
+  nop                     String
+
+  oldOwnerName            String?
+  oldOwnerStreet          String?
+  oldOwnerBlock           String?
+  oldOwnerRt              String?
+  oldOwnerRw              String?
+  oldOwnerDistrict        String?
+  oldOwnerVillage         String?
+
+  oldPropertyStreet       String?
+  oldPropertyBlock        String?
+  oldPropertyRt           String?
+  oldPropertyRw           String?
+  oldPropertyDistrict     String?
+  oldPropertyVillage      String?
+
+  oldLandArea             Float?
+  oldBuildingArea         Float?
+
+  applicantPhone          String?
+  bundleId                String? @db.ObjectId
+
+  details                 DetailPermohonan[]
+  scanFiles               ScanFile[]
+
+  createdById             String @db.ObjectId
+  createdAt               DateTime @default(now())
+  updatedAt               DateTime @updatedAt
+
+  @@index([nop])
+  @@index([status, createdAt(sort: Desc)])
+  @@index([nop, status])
+}
+
+type DetailPermohonan {
+  newOwnerName            String
+  newOwnerStreet          String
+  newOwnerBlock           String
+  newOwnerRt              String
+  newOwnerRw              String
+  newOwnerDistrict        String
+  newOwnerVillage         String
+
+  newPropertyStreet       String
+  newPropertyBlock        String
+  newPropertyRt           String
+  newPropertyRw           String
+  newPropertyDistrict     String
+  newPropertyVillage      String
+
+  newLandArea             Float
+  newBuildingArea         Float
+  ownershipProof          String
+}
+
+type ScanFile {
+  fileId              String
+  fileName            String
+  storageKey          String
+  mimeType            String
+  fileSize            Int
+  uploadedById        String
+  uploadedAt          DateTime
+}
+
+model Bundle {
+  id                 String @id @default(auto()) @map("_id") @db.ObjectId
+  bundleNumber       String @unique
+  serviceType        ServiceType
+  status             BundleStatus
+  coverLetterUrl     String?
+  itemCount          Int
+  createdById        String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+}
+
+model Manifest {
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  manifestNumber      String @unique
+  status              ManifestStatus
+  bundleIds           String[]
+  signedProofUrl      String?
+  approvedAt          DateTime?
+  approvedById        String?
+  createdAt           DateTime @default(now())
+  updatedAt           DateTime @updatedAt
+}
+
+model AuditLog {
+  id                  String @id @default(auto()) @map("_id") @db.ObjectId
+  userId              String
+  userName            String
+  userRole            String
+  entityType          String
+  entityId            String
+  action              String
+  oldValue            Json?
+  newValue            Json?
+  ipAddress           String?
+  userAgent           String?
+  createdAt           DateTime @default(now())
+
+  @@index([entityId, createdAt(sort: Desc)])
+  @@index([userId, createdAt(sort: Desc)])
+  @@index([createdAt(sort: Desc), action])
+}
