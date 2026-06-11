@@ -1,167 +1,18 @@
+// src/components/app-sidebar.tsx
 'use client';
 
 import * as React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { cn } from '@/lib/utils';
 import { UserRole } from '@prisma/client';
-import {
-  BarChart3,
-  BookOpen,
-  ChevronDown,
-  ChevronRight,
-  FileCheck,
-  FileClock,
-  FileSpreadsheet,
-  FileText,
-  FolderLock,
-  FolderSync,
-  Grid3X3,
-  LayoutDashboard,
-  Package,
-  PanelLeftClose,
-  PanelLeftOpen,
-  Truck,
-} from 'lucide-react';
-import { ArchitaxLogo } from '@/components/shared/logo';
 
-/*
- * Clay Design Tokens (inline for portability)
- * source: DESIGN_CLAY.md
- */
-const C = {
-  surfaceSoft:    '#faf5e8',   // sidebar background
-  surfaceCard:    '#f5f0e0',   // hover / sub-item bg
-  surfaceStrong:  '#ebe6d6',   // active item bg
-  hairline:       '#e5e5e5',   // 1px borders
-  hairlineSoft:   '#f0f0f0',   // dividers inside nav
-  ink:            '#0a0a0a',   // active text
-  bodyStrong:     '#1a1a1a',   // username, nav text active
-  body:           '#3a3a3a',   // default text
-  muted:          '#6a6a6a',   // section labels, inactive nav
-  mutedSoft:      '#9a9a9a',   // captions
-  pink:           '#ff4d8b',   // Architax brand accent (active pill, avatar)
-  mint:           '#a4d4c5',   // online dot
-} as const;
-
-// ─── Types ────────────────────────────────────────────────────────────────────
-
-interface SubMenuItem { name: string; href: string; }
 interface MenuItem {
   name: string;
   href: string;
   icon: React.ReactNode;
   allowedRoles: UserRole[];
-  badge?: string;
-  children?: SubMenuItem[];
-  sectionLabel?: string;
+  badge?: React.ReactNode;
 }
-
-// ─── Menu Definition ──────────────────────────────────────────────────────────
-
-const menuItems: MenuItem[] = [
-  {
-    sectionLabel: 'Ringkasan',
-    name: 'Dashboard',
-    href: '/dashboard',
-    icon: <LayoutDashboard className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PENGINPUT', 'STAF_PENELITI', 'STAF_PENGARSIP', 'STAF_PENGIRIM', 'STAF_PEMANTAU', 'SUPERVISOR'],
-  },
-  {
-    sectionLabel: 'Permohonan',
-    name: 'Permohonan Saya',
-    href: '/permohonan',
-    icon: <FileText className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PENGINPUT'],
-  },
-  {
-    name: 'Revisi Permohonan',
-    href: '/permohonan/revisi',
-    icon: <FileClock className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PENGINPUT'],
-  },
-  {
-    sectionLabel: 'Penelitian',
-    name: 'Antrean Validasi',
-    href: '/permohonan/queue',
-    icon: <FileCheck className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PENELITI'],
-  },
-  {
-    name: 'Bundling Berkas',
-    href: '/bundle',
-    icon: <Package className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PENELITI'],
-    children: [
-      { name: 'Daftar Bundle', href: '/bundle' },
-      { name: 'Riwayat Bundle', href: '/bundle/history' },
-    ],
-  },
-  {
-    sectionLabel: 'Pengarsipan',
-    name: 'Pengarsipan',
-    href: '/arsip',
-    icon: <FileSpreadsheet className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PENGARSIP'],
-  },
-  {
-    sectionLabel: 'Pengiriman',
-    name: 'Manifest Pengiriman',
-    href: '/manifest',
-    icon: <FolderSync className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PENGIRIM'],
-    children: [
-      { name: 'Manifest', href: '/manifest' },
-      { name: 'Pengiriman', href: '/manifest/shipping' },
-    ],
-  },
-  {
-    sectionLabel: 'Monitoring',
-    name: 'Monitoring Berkas',
-    href: '/monitoring',
-    icon: <Grid3X3 className="h-[17px] w-[17px]" />,
-    allowedRoles: ['STAF_PEMANTAU', 'SUPERVISOR'],
-  },
-  {
-    sectionLabel: 'Manajemen',
-    name: 'Analytics',
-    href: '/analytics',
-    icon: <BarChart3 className="h-[17px] w-[17px]" />,
-    allowedRoles: ['SUPERVISOR'],
-  },
-  {
-    name: 'Audit Log',
-    href: '/audit',
-    icon: <FolderLock className="h-[17px] w-[17px]" />,
-    allowedRoles: ['SUPERVISOR'],
-  },
-];
-
-// ─── Role metadata ────────────────────────────────────────────────────────────
-
-const roleLabelMap: Record<string, string> = {
-  STAF_PENGINPUT: 'Staf Penginput',
-  STAF_PENELITI: 'Staf Peneliti',
-  STAF_PENGARSIP: 'Staf Pengarsip',
-  STAF_PENGIRIM: 'Staf Pengirim',
-  STAF_PEMANTAU: 'Staf Pemantau',
-  SUPERVISOR: 'Supervisor',
-};
-
-/*
- * Role badge colors using Clay brand palette:
- * — pill shape, cream-adjacent fills, saturated text
- */
-const roleBadgeMap: Record<string, { bg: string; text: string; border: string }> = {
-  STAF_PENGINPUT: { bg: '#dbeafe', text: '#1e40af', border: '#bfdbfe' },
-  STAF_PENELITI:  { bg: '#ede9fe', text: '#5b21b6', border: '#ddd6fe' },
-  STAF_PENGARSIP: { bg: '#fef3c7', text: '#92400e', border: '#fde68a' },
-  STAF_PENGIRIM:  { bg: '#ccfbf1', text: '#115e59', border: '#99f6e4' },
-  STAF_PEMANTAU:  { bg: '#e0e7ff', text: '#3730a3', border: '#c7d2fe' },
-  SUPERVISOR:     { bg: '#fce7f3', text: '#9d174d', border: '#fbcfe8' },
-};
-
-// ─── Props ────────────────────────────────────────────────────────────────────
 
 interface AppSidebarProps {
   userRole: UserRole;
@@ -171,412 +22,362 @@ interface AppSidebarProps {
   onMobileClose?: () => void;
 }
 
-// ─── Component ───────────────────────────────────────────────────────────────
-
 export function AppSidebar({ userRole, userName, collapsed, onToggle, onMobileClose }: AppSidebarProps) {
   const pathname = usePathname();
-  const filteredMenu = menuItems.filter(item => item.allowedRoles.includes(userRole));
 
-  const [expandedItems, setExpandedItems] = React.useState<Set<string>>(() => {
-    const initial = new Set<string>();
-    filteredMenu.forEach(item => {
-      if (item.children) {
-        const childActive = item.children.some(c => pathname === c.href || pathname.startsWith(c.href + '/'));
-        if (childActive) initial.add(item.href);
-      }
-    });
-    return initial;
-  });
+  // Clay Concentric Circles Logo SVG
+  const ClayLogo = (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+      <circle cx="12" cy="12" r="10" stroke="#FF52C2" strokeWidth="2.5" />
+      <circle cx="12" cy="12" r="7.5" stroke="#8B5CF6" strokeWidth="2.5" />
+      <circle cx="12" cy="12" r="5" stroke="#3BD3FD" strokeWidth="2.5" />
+      <circle cx="12" cy="12" r="2.5" fill="#F58C50" />
+    </svg>
+  );
 
-  const toggleExpanded = (href: string) => {
-    setExpandedItems(prev => {
-      const next = new Set(prev);
-      next.has(href) ? next.delete(href) : next.add(href);
-      return next;
-    });
-  };
+  // Custom SVG Icons
+  const HomeIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" />
+      <polyline points="9 22 9 12 15 12 15 22" />
+    </svg>
+  );
 
-  const isItemActive = (item: MenuItem): boolean => {
-    if (item.children) return item.children.some(c => pathname === c.href || pathname.startsWith(c.href + '/'));
-    if (pathname === item.href) return true;
-    if (item.href === '/dashboard') return false;
-    const isSubPath = pathname.startsWith(item.href + '/');
-    if (!isSubPath) return false;
-    const hasMoreSpecific = filteredMenu.some(other =>
-      other.href !== item.href &&
-      other.href.startsWith(item.href + '/') &&
-      (pathname === other.href || pathname.startsWith(other.href + '/'))
-    );
-    return !hasMoreSpecific;
-  };
+  const FindLeadsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8" />
+      <line x1="21" y1="21" x2="16.65" y2="16.65" />
+    </svg>
+  );
 
-  // Build display list injecting section headers
-  const displayItems: (MenuItem & { _isSection?: never } | { _isSection: true; label: string; key: string })[] = [];
-  const seenSections = new Set<string>();
-  filteredMenu.forEach(item => {
-    if (item.sectionLabel && !seenSections.has(item.sectionLabel)) {
-      seenSections.add(item.sectionLabel);
-      displayItems.push({ _isSection: true, label: item.sectionLabel, key: `section-${item.sectionLabel}` });
-    }
-    displayItems.push(item);
-  });
+  const SignalsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M2 12h5l2 9 4-18 3 12h5" />
+    </svg>
+  );
 
-  const initials = userName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-  const roleBadge = roleBadgeMap[userRole] ?? { bg: C.surfaceCard, text: C.body, border: C.hairline };
+  const AdsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M11 5L6 9H2v6h4l5 4V5z" />
+      <path d="M15.54 8.46a5 5 0 0 1 0 7.07" />
+    </svg>
+  );
 
-  return (
-    /*
-     * Sidebar surface → Clay surface-soft (#faf5e8)
-     * Separator → 1px hairline (#e5e5e5) — NO shadow
-     * Width transition → cubic-bezier smooth
-     */
-    <aside
-      style={{ backgroundColor: C.surfaceSoft, borderRight: `1px solid ${C.hairline}` }}
-      className={cn(
-        'h-full flex flex-col flex-shrink-0',
-        'transition-[width] duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] overflow-hidden',
-        collapsed ? 'w-[64px]' : 'w-[240px]',
-      )}
+  const CampaignsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z" />
+      <polyline points="22,6 12,13 2,6" />
+    </svg>
+  );
+
+  const ClaygentsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2a10 10 0 0 1 8 4h-8V2zM12 22a10 10 0 0 1-8-4h8v4zM2 12a10 10 0 0 1 4-8v8H2zM22 12a10 10 0 0 1-4 8v-8h4z" />
+    </svg>
+  );
+
+  const FunctionsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="16 18 22 12 16 6" />
+      <polyline points="8 6 2 12 8 18" />
+    </svg>
+  );
+
+  const McpIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="2" y="2" width="20" height="8" rx="2" ry="2" />
+      <rect x="2" y="14" width="20" height="8" rx="2" ry="2" />
+      <line x1="6" y1="6" x2="6.01" y2="6" />
+      <line x1="6" y1="18" x2="6.01" y2="18" />
+    </svg>
+  );
+
+  const ExportsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+      <polyline points="7 10 12 15 17 10" />
+      <line x1="12" y1="15" x2="12" y2="3" />
+    </svg>
+  );
+
+  const TrashIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6" />
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2" />
+    </svg>
+  );
+
+  const SettingsIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="3" />
+      <path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z" />
+    </svg>
+  );
+
+  const AiContextIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" />
+      <path d="M12 6v12" />
+      <path d="M8 10h8" />
+      <path d="M8 14h8" />
+    </svg>
+  );
+
+  const ResourcesIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+      <path d="M4 4.5A2.5 2.5 0 0 1 6.5 2H20v20H6.5a2.5 2.5 0 0 1-2.5-2.5v-15z" />
+    </svg>
+  );
+
+  // Amber Upgrade Badge style
+  const UpgradeBadge = (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: '2px',
+        backgroundColor: '#FEF3C7',
+        color: '#B45309',
+        fontSize: '9px',
+        fontWeight: 'bold',
+        padding: '1px 5px',
+        borderRadius: '9999px',
+        marginLeft: 'auto',
+      }}
     >
-      {/* ── Brand / Logo ──────────────────────────────── */}
-      <div
-        style={{ borderBottom: `1px solid ${C.hairline}`, height: 60 }}
-        className={cn(
-          'flex items-center flex-shrink-0',
-          collapsed ? 'justify-center px-3' : 'px-4 gap-3'
-        )}
+      🔗 Upgrade
+    </span>
+  );
+
+  // Indigo Beta Badge style
+  const BetaBadge = (
+    <span
+      style={{
+        display: 'inline-flex',
+        alignItems: 'center',
+        backgroundColor: '#EEF2FF',
+        color: '#4F46E5',
+        fontSize: '9px',
+        fontWeight: 'bold',
+        padding: '1px 5px',
+        borderRadius: '9999px',
+        border: '1px solid #C7D2FE',
+        marginLeft: 'auto',
+      }}
+    >
+      Beta
+    </span>
+  );
+
+  const ALL_ROLES = [
+    UserRole.STAF_PENGINPUT,
+    UserRole.STAF_PENELITI,
+    UserRole.STAF_PENGARSIP,
+    UserRole.STAF_PENGIRIM,
+    UserRole.STAF_PEMANTAU,
+    UserRole.SUPERVISOR,
+  ];
+
+  // Menu items mapping
+  const primaryNavItems: MenuItem[] = [
+    { name: 'Home', href: '/dashboard', icon: HomeIcon, allowedRoles: ALL_ROLES },
+    { name: 'Find leads', href: '/permohonan', icon: FindLeadsIcon, allowedRoles: ALL_ROLES },
+  ];
+
+  const orchestrationNavItems: MenuItem[] = [
+    {
+      name: 'Signals',
+      href: userRole === 'STAF_PENELITI' ? '/permohonan/queue' : userRole === 'STAF_PENGINPUT' ? '/permohonan/revisi' : '/permohonan',
+      icon: SignalsIcon,
+      allowedRoles: ALL_ROLES,
+    },
+    { name: 'Ads', href: '/manifest', icon: AdsIcon, allowedRoles: ALL_ROLES, badge: UpgradeBadge },
+    { name: 'Campaigns', href: '/bundle', icon: CampaignsIcon, allowedRoles: ALL_ROLES },
+    { name: 'Claygents', href: '/ai', icon: ClaygentsIcon, allowedRoles: ALL_ROLES },
+    { name: 'Functions', href: '/monitoring', icon: FunctionsIcon, allowedRoles: ALL_ROLES },
+    { name: 'MCP', href: '/analytics', icon: McpIcon, allowedRoles: ALL_ROLES, badge: BetaBadge },
+  ];
+
+  const bottomNavItems: MenuItem[] = [
+    { name: 'Exports', href: '/arsip', icon: ExportsIcon, allowedRoles: ALL_ROLES },
+    { name: 'Trash', href: '/audit', icon: TrashIcon, allowedRoles: ALL_ROLES },
+    { name: 'Settings', href: '/audit', icon: SettingsIcon, allowedRoles: ALL_ROLES },
+    { name: 'AI context', href: '/ai', icon: AiContextIcon, allowedRoles: ALL_ROLES },
+    { name: 'Resources', href: '/permohonan', icon: ResourcesIcon, allowedRoles: ALL_ROLES },
+  ];
+
+  const renderLinkItem = (item: MenuItem) => {
+    const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'));
+
+    return (
+      <Link
+        key={item.name}
+        href={item.href}
+        onClick={onMobileClose}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: collapsed ? '0' : '8px',
+          padding: '6px 12px',
+          margin: '2px 8px',
+          borderRadius: '5px',
+          fontSize: '12.5px',
+          fontWeight: 500,
+          color: isActive ? '#1D4ED8' : '#4b5563',
+          backgroundColor: isActive ? '#EFF6FF' : 'transparent',
+          textDecoration: 'none',
+          transition: 'all 120ms',
+          justifyContent: collapsed ? 'center' : 'flex-start',
+        }}
+        onMouseEnter={(e) => {
+          if (!isActive) {
+            e.currentTarget.style.backgroundColor = '#f3f4f6';
+            e.currentTarget.style.color = '#111827';
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!isActive) {
+            e.currentTarget.style.backgroundColor = 'transparent';
+            e.currentTarget.style.color = '#4b5563';
+          }
+        }}
       >
-        <div className="flex-shrink-0">
-          <ArchitaxLogo size={28} />
-        </div>
+        <span style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', color: isActive ? '#1D4ED8' : '#6B7280' }}>
+          {item.icon}
+        </span>
         {!collapsed && (
-          /* Clay display font: Plus Jakarta Sans 800, tight tracking */
-          <span
-            className="font-display whitespace-nowrap overflow-hidden"
-            style={{ fontSize: 16, fontWeight: 800, letterSpacing: '-0.04em', color: C.ink }}
-          >
-            Archi<span style={{ color: C.pink }}>tax</span>
+          <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            {item.name}
           </span>
         )}
-      </div>
+        {!collapsed && item.badge}
+      </Link>
+    );
+  };
 
-      {/* ── Navigation ────────────────────────────────── */}
-      <nav className={cn('flex-1 overflow-y-auto py-2', collapsed ? 'px-1.5' : 'px-2.5')}>
-        {displayItems.map((item) => {
-          // Section header
-          if ('_isSection' in item && item._isSection) {
-            if (collapsed) return null;
-            return (
-              <p
-                key={item.key}
-                className="clay-caption-upper select-none"
-                style={{
-                  color: C.mutedSoft,
-                  padding: '16px 10px 4px',
-                  marginTop: 4,
-                }}
-              >
-                {item.label}
-              </p>
-            );
-          }
-
-          const menuItem = item as MenuItem;
-          const active = isItemActive(menuItem);
-          const hasChildren = !!menuItem.children?.length;
-          const isExpanded = expandedItems.has(menuItem.href);
-
-          /* Shared nav-item styles */
-          const itemBase: React.CSSProperties = {
-            borderRadius: 8, /* Clay rounded.sm = 8px for nav items */
-            minHeight: 40,   /* WCAG touch target */
-            padding: collapsed ? '10px 8px' : '10px 10px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: collapsed ? 0 : 10,
-            justifyContent: collapsed ? 'center' : 'flex-start',
-            width: '100%',
-            cursor: 'pointer',
-            transition: 'background-color 120ms ease-out, transform 120ms ease-out',
-            fontSize: 14,
-            fontWeight: 500,
-            letterSpacing: 0,
-            border: 'none',
-            textDecoration: 'none',
-          };
-
-          const activeStyles: React.CSSProperties = {
-            backgroundColor: C.surfaceStrong,
-            color: C.ink,
-          };
-          const inactiveStyles: React.CSSProperties = {
-            backgroundColor: 'transparent',
-            color: C.muted,
-          };
-
-          if (hasChildren) {
-            return (
-              <div key={menuItem.href}>
-                <button
-                  onClick={() => {
-                    if (collapsed) {
-                      onToggle();
-                      setTimeout(() => setExpandedItems(prev => new Set(prev).add(menuItem.href)), 310);
-                    } else {
-                      toggleExpanded(menuItem.href);
-                    }
-                  }}
-                  title={collapsed ? menuItem.name : undefined}
-                  className="group clay-press"
-                  style={{
-                    ...itemBase,
-                    ...(active ? activeStyles : inactiveStyles),
-                  }}
-                  onMouseEnter={e => {
-                    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = C.surfaceCard;
-                  }}
-                  onMouseLeave={e => {
-                    if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                  }}
-                >
-                  {/* Active indicator pill */}
-                  {active && !collapsed && (
-                    <span
-                      style={{
-                        position: 'absolute',
-                        left: 0,
-                        top: '50%',
-                        transform: 'translateY(-50%)',
-                        width: 3,
-                        height: '55%',
-                        borderRadius: '0 3px 3px 0',
-                        backgroundColor: C.pink,
-                      }}
-                    />
-                  )}
-                  <span style={{ color: active ? C.pink : C.muted, flexShrink: 0, transition: 'color 120ms' }}>
-                    {menuItem.icon}
-                  </span>
-                  {!collapsed && (
-                    <>
-                      <span style={{ flex: 1, textAlign: 'left', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                        {menuItem.name}
-                      </span>
-                      <ChevronDown
-                        className={cn('h-3.5 w-3.5 flex-shrink-0 transition-transform duration-200', isExpanded ? 'rotate-180' : '')}
-                        style={{ color: C.mutedSoft }}
-                      />
-                    </>
-                  )}
-                </button>
-
-                {/* Sub-menu */}
-                {!collapsed && isExpanded && (
-                  <div
-                    style={{ marginLeft: 12, paddingLeft: 10, borderLeft: `1px solid ${C.hairlineSoft}`, marginBottom: 2 }}
-                    className="space-y-0.5 mt-0.5"
-                  >
-                    {menuItem.children!.map(child => {
-                      const childActive = pathname === child.href || pathname.startsWith(child.href + '/');
-                      return (
-                        <Link
-                          key={child.href}
-                          href={child.href}
-                          onClick={onMobileClose}
-                          style={{
-                            display: 'flex',
-                            alignItems: 'center',
-                            gap: 6,
-                            padding: '7px 10px',
-                            borderRadius: 6,
-                            fontSize: 13,
-                            fontWeight: childActive ? 600 : 500,
-                            color: childActive ? C.ink : C.muted,
-                            backgroundColor: childActive ? C.surfaceCard : 'transparent',
-                            textDecoration: 'none',
-                            minHeight: 36,
-                            transition: 'background-color 100ms',
-                          }}
-                          onMouseEnter={e => {
-                            if (!childActive) (e.currentTarget as HTMLElement).style.backgroundColor = C.surfaceCard;
-                          }}
-                          onMouseLeave={e => {
-                            if (!childActive) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                          }}
-                        >
-                          <ChevronRight className="h-3 w-3 flex-shrink-0" style={{ color: C.mutedSoft, opacity: 0.6 }} />
-                          {child.name}
-                        </Link>
-                      );
-                    })}
-                  </div>
-                )}
-              </div>
-            );
-          }
-
-          return (
-            <Link
-              key={menuItem.href}
-              href={menuItem.href}
-              onClick={onMobileClose}
-              title={collapsed ? menuItem.name : undefined}
-              className="relative clay-press block"
-              style={{ ...itemBase, ...(active ? activeStyles : inactiveStyles) }}
-              onMouseEnter={e => {
-                if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = C.surfaceCard;
-              }}
-              onMouseLeave={e => {
-                if (!active) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-              }}
-            >
-              {/* Active left-edge pill indicator */}
-              {active && !collapsed && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    left: 0,
-                    top: '50%',
-                    transform: 'translateY(-50%)',
-                    width: 3,
-                    height: '55%',
-                    borderRadius: '0 3px 3px 0',
-                    backgroundColor: C.pink,
-                  }}
-                />
-              )}
-              <span style={{ color: active ? C.pink : C.muted, flexShrink: 0, transition: 'color 120ms' }}>
-                {menuItem.icon}
-              </span>
-              {!collapsed && (
-                <span style={{ flex: 1, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
-                  {menuItem.name}
-                </span>
-              )}
-              {!collapsed && menuItem.badge && (
-                <span
-                  style={{
-                    fontSize: 10,
-                    fontWeight: 700,
-                    padding: '2px 6px',
-                    borderRadius: 9999,
-                    backgroundColor: C.pink,
-                    color: '#fff',
-                    marginLeft: 'auto',
-                  }}
-                >
-                  {menuItem.badge}
-                </span>
-              )}
-            </Link>
-          );
-        })}
-      </nav>
-
-      {/* ── User Footer ───────────────────────────────── */}
+  return (
+    <aside
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: collapsed ? '56px' : '200px',
+        height: '100%',
+        backgroundColor: '#ffffff',
+        borderRight: '1px solid #E5E7EB',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
+        overflowY: 'auto',
+        transition: 'width 200ms ease-in-out',
+      }}
+    >
+      {/* Sidebar Header Logo & Toggle Button at the top */}
       <div
-        style={{ borderTop: `1px solid ${C.hairline}`, backgroundColor: C.surfaceCard }}
-        className={cn('flex-shrink-0', collapsed ? 'p-2.5 flex justify-center' : 'p-3')}
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          height: '46px',
+          padding: collapsed ? '0' : '0 12px 0 16px',
+          borderBottom: '1px solid #F3F4F6',
+          flexShrink: 0,
+          justifyContent: collapsed ? 'center' : 'space-between',
+        }}
       >
-        {collapsed ? (
-          <div
-            title={`${userName} · ${roleLabelMap[userRole] ?? userRole}`}
-            style={{
-              height: 36, width: 36,
-              borderRadius: 9999,
-              background: `linear-gradient(135deg, ${C.pink} 0%, #c0113b 100%)`,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              color: '#fff', fontSize: 12, fontWeight: 700,
-              cursor: 'default', flexShrink: 0,
-            }}
-          >
-            {initials}
-          </div>
-        ) : (
-          <div className="flex items-center gap-2.5">
-            {/* Avatar + online dot */}
-            <div className="relative flex-shrink-0">
-              <div
-                style={{
-                  height: 36, width: 36, borderRadius: 9999,
-                  background: `linear-gradient(135deg, ${C.pink} 0%, #c0113b 100%)`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff', fontSize: 12, fontWeight: 700,
-                }}
-              >
-                {initials}
-              </div>
-              {/* Online dot — Clay brand-mint */}
+        {!collapsed ? (
+          <>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+              {ClayLogo}
               <span
                 style={{
-                  position: 'absolute', bottom: 0, right: 0,
-                  height: 10, width: 10, borderRadius: 9999,
-                  backgroundColor: C.mint,
-                  border: `2px solid ${C.surfaceCard}`,
-                }}
-              />
-            </div>
-            <div style={{ overflow: 'hidden', flex: 1 }}>
-              <p style={{ fontSize: 13, fontWeight: 600, color: C.bodyStrong, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', lineHeight: 1.3 }}>
-                {userName}
-              </p>
-              {/* Role badge — Clay badge-pill style */}
-              <span
-                style={{
-                  display: 'inline-block',
-                  marginTop: 2,
-                  fontSize: 10, fontWeight: 600,
-                  padding: '1px 7px',
-                  borderRadius: 9999,
-                  lineHeight: 1.6,
-                  backgroundColor: roleBadge.bg,
-                  color: roleBadge.text,
-                  border: `1px solid ${roleBadge.border}`,
+                  fontSize: '14px',
+                  fontWeight: 'bold',
+                  color: '#111827',
+                  letterSpacing: '-0.02em',
                 }}
               >
-                {roleLabelMap[userRole] ?? userRole}
+                Architax
               </span>
             </div>
-          </div>
+            {/* Collapse toggle button on expanded */}
+            <button
+              onClick={onToggle}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'none',
+                border: 'none',
+                color: '#6B7280',
+                cursor: 'pointer',
+                padding: '4px',
+                borderRadius: '4px',
+                transition: 'background-color 100ms',
+              }}
+              onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F3F4F6')}
+              onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+              title="Collapse sidebar"
+            >
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <polyline points="15 18 9 12 15 6" />
+              </svg>
+            </button>
+          </>
+        ) : (
+          /* When collapsed, show only the logo as a button that re-opens the sidebar */
+          <button
+            onClick={onToggle}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '6px',
+              borderRadius: '4px',
+              transition: 'background-color 100ms',
+            }}
+            onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#F3F4F6')}
+            onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+            title="Expand sidebar"
+          >
+            {ClayLogo}
+          </button>
         )}
       </div>
 
-      {/* ── Collapse Toggle ───────────────────────────── */}
-      <button
-        onClick={onToggle}
-        style={{
-          height: 40,
-          display: 'flex', alignItems: 'center', justifyContent: 'center',
-          gap: 6,
-          flexShrink: 0,
-          width: '100%',
-          cursor: 'pointer',
-          fontSize: 12, fontWeight: 500,
-          color: C.muted,
-          backgroundColor: 'transparent',
-          borderTop: `1px solid ${C.hairline}`,
-          borderLeft: 'none',
-          borderRight: 'none',
-          borderBottom: 'none',
-          transition: 'background-color 120ms, color 120ms',
-          paddingLeft: collapsed ? 0 : 16,
-          paddingRight: collapsed ? 0 : 16,
-        }}
-        onMouseEnter={e => {
-          (e.currentTarget as HTMLElement).style.backgroundColor = C.surfaceCard;
-          (e.currentTarget as HTMLElement).style.color = C.bodyStrong;
-        }}
-        onMouseLeave={e => {
-          (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-          (e.currentTarget as HTMLElement).style.color = C.muted;
-        }}
-        className="clay-press"
-      >
-        {collapsed
-          ? <PanelLeftOpen className="h-4 w-4" />
-          : <><PanelLeftClose className="h-4 w-4" /><span>Perkecil Panel</span></>
-        }
-      </button>
+      {/* Primary Navigation */}
+      <div style={{ marginTop: '12px' }}>
+        {primaryNavItems.map(renderLinkItem)}
+      </div>
+
+      {/* Orchestration Section */}
+      <div style={{ marginTop: '16px' }}>
+        {!collapsed && (
+          <p
+            style={{
+              fontSize: '10px',
+              fontWeight: 'bold',
+              color: '#9CA3AF',
+              textTransform: 'uppercase',
+              letterSpacing: '0.05em',
+              padding: '0 20px',
+              margin: '0 0 6px 0',
+            }}
+          >
+            Orchestration
+          </p>
+        )}
+        {orchestrationNavItems.map(renderLinkItem)}
+      </div>
+
+      {/* Spacer */}
+      <div style={{ flex: 1 }} />
+
+      {/* Bottom Section Navigation */}
+      <div style={{ paddingBottom: '12px', borderTop: '1px solid #F3F4F6', paddingTop: '8px' }}>
+        {bottomNavItems.map(renderLinkItem)}
+      </div>
     </aside>
   );
 }

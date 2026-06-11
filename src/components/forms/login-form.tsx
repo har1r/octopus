@@ -17,7 +17,7 @@ import { Eye, EyeOff, Loader2, Lock, User } from 'lucide-react';
 
 export function LoginForm() {
   const [showPassword, setShowPassword] = React.useState(false);
-  const [isPending, startTransition]    = React.useTransition();
+  const [isPending, startTransition] = React.useTransition();
   const [focusedField, setFocusedField] = React.useState<string | null>(null);
 
   const {
@@ -42,16 +42,16 @@ export function LoginForm() {
     });
   };
 
-  /* Shared input wrapper style */
+  /* Shared input wrapper style — White + Blue System */
   const inputWrapperStyle = (fieldName: string): React.CSSProperties => ({
     position: 'relative',
     display: 'flex',
     alignItems: 'center',
-    height: 44,                     /* Clay text-input: height 44px — WCAG AAA */
-    borderRadius: 12,               /* Clay rounded.md */
-    border: `1px solid ${focusedField === fieldName ? '#0a0a0a' : '#e5e5e5'}`,  /* focus → ink border */
-    backgroundColor: '#fffaf0',     /* Clay canvas bg */
-    boxShadow: focusedField === fieldName ? '0 0 0 3px rgba(255,77,139,0.12)' : 'none',
+    height: 40,
+    borderRadius: 8,
+    border: `1px solid ${focusedField === fieldName ? '#2563eb' : '#e2e8f0'}`,
+    backgroundColor: '#ffffff',
+    boxShadow: focusedField === fieldName ? '0 0 0 3px rgba(37,99,235,0.12)' : 'none',
     transition: 'border-color 200ms ease-out, box-shadow 200ms ease-out',
     overflow: 'hidden',
   });
@@ -63,29 +63,29 @@ export function LoginForm() {
     background: 'transparent',
     border: 'none',
     outline: 'none',
-    fontSize: 14,
+    fontSize: 13.5,
     fontWeight: 400,
-    color: '#0a0a0a',
+    color: '#0f172a',
     paddingRight: 12,
   };
 
-  /* Label style — Clay caption-uppercase */
+  /* Label style */
   const labelStyle: React.CSSProperties = {
     display: 'block',
-    fontSize: 11,
+    fontSize: 10.5,
     fontWeight: 700,
-    letterSpacing: '0.08em',
+    letterSpacing: '0.07em',
     textTransform: 'uppercase',
-    color: '#6a6a6a',
-    marginBottom: 6,
+    color: '#64748b',
+    marginBottom: 5,
   };
 
   /* Icon style */
   const iconStyle = (fieldName: string): React.CSSProperties => ({
-    color: focusedField === fieldName ? '#0a0a0a' : '#9a9a9a',
+    color: focusedField === fieldName ? '#2563eb' : '#94a3b8',
     transition: 'color 200ms',
     flexShrink: 0,
-    margin: '0 10px 0 12px',
+    margin: '0 9px 0 11px',
   });
 
   return (
@@ -179,24 +179,30 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={isPending}
-        className="clay-press"
+        className="arch-press"
         style={{
-          height: 44,
-          borderRadius: 12,
-          backgroundColor: isPending ? '#e5e5e5' : '#0a0a0a',
-          color: isPending ? '#6a6a6a' : '#ffffff',
-          fontSize: 14, fontWeight: 600,
+          height: 40,
+          borderRadius: 8,
+          backgroundColor: isPending ? '#e2e8f0' : '#2563eb',
+          color: isPending ? '#94a3b8' : '#ffffff',
+          fontSize: 13.5, fontWeight: 600,
           border: 'none', cursor: isPending ? 'not-allowed' : 'pointer',
           display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
           width: '100%',
           marginTop: 4,
-          transition: 'background-color 150ms ease-out',
+          transition: 'background-color 150ms ease-out, box-shadow 150ms ease-out',
         }}
         onMouseEnter={e => {
-          if (!isPending) (e.currentTarget as HTMLElement).style.backgroundColor = '#1f1f1f';
+          if (!isPending) {
+            (e.currentTarget as HTMLElement).style.backgroundColor = '#1d4ed8';
+            (e.currentTarget as HTMLElement).style.boxShadow = '0 2px 8px rgba(37,99,235,0.3)';
+          }
         }}
         onMouseLeave={e => {
-          if (!isPending) (e.currentTarget as HTMLElement).style.backgroundColor = '#0a0a0a';
+          if (!isPending) {
+            (e.currentTarget as HTMLElement).style.backgroundColor = '#2563eb';
+            (e.currentTarget as HTMLElement).style.boxShadow = 'none';
+          }
         }}
       >
         {isPending ? (

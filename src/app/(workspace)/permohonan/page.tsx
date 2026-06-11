@@ -5,13 +5,13 @@ import Link from 'next/link';
 import { PermohonanService } from '@/services/permohonan.service';
 import { PermohonanFilters as TableFilters } from '@/components/tables/permohonan-filters';
 import { DeletePermohonanButton } from '@/components/shared/delete-permohonan-button';
-import { 
-  Table, 
-  TableBody, 
-  TableCell, 
-  TableHead, 
-  TableHeader, 
-  TableRow 
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow
 } from '@/components/ui/table';
 import { Plus, Edit3, ArrowLeft, ArrowRight, Eye } from 'lucide-react';
 import { ServiceType, ApplicationStatus } from '@prisma/client';
@@ -157,10 +157,10 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
               </TableRow>
             ) : (
               items.map((item) => {
-                const isDraftEditable = 
-                  userRole === 'STAF_PENGINPUT' && 
+                const isDraftEditable =
+                  userRole === 'STAF_PENGINPUT' &&
                   (item.status === ApplicationStatus.SUBMITTED || item.status === ApplicationStatus.REVISION);
-                
+
                 return (
                   <TableRow key={item.id} className="border-b border-slate-100 hover:bg-slate-50/30 transition-colors duration-150">
                     <TableCell className="font-bold text-slate-900 font-display">{item.nomorBerkas}</TableCell>
@@ -223,12 +223,12 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
           </div>
         ) : (
           items.map((item) => {
-            const isDraftEditable = 
-              userRole === 'STAF_PENGINPUT' && 
+            const isDraftEditable =
+              userRole === 'STAF_PENGINPUT' &&
               (item.status === ApplicationStatus.SUBMITTED || item.status === ApplicationStatus.REVISION);
-            
+
             return (
-              <div 
+              <div
                 key={item.id}
                 className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm shadow-slate-100/40 flex flex-col gap-4 hover:border-slate-200 transition-all duration-200"
               >
@@ -308,9 +308,8 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
                 ...(serviceType ? { serviceType } : {}),
                 ...(status ? { status } : {}),
               }).toString()}`}
-              className={`border border-slate-200 hover:bg-slate-50 hover:text-slate-900 rounded-xl h-9 px-4 font-bold text-xs flex items-center gap-1.5 text-slate-700 transition-all duration-150 active:scale-95 cursor-pointer shadow-sm ${
-                currentPage <= 1 ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
-              }`}
+              className={`border border-slate-200 hover:bg-slate-50 hover:text-slate-900 rounded-xl h-9 px-4 font-bold text-xs flex items-center gap-1.5 text-slate-700 transition-all duration-150 active:scale-95 cursor-pointer shadow-sm ${currentPage <= 1 ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
+                }`}
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Sebelumnya
             </Link>
@@ -324,9 +323,8 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
                 ...(serviceType ? { serviceType } : {}),
                 ...(status ? { status } : {}),
               }).toString()}`}
-              className={`border border-slate-200 hover:bg-slate-50 hover:text-slate-900 rounded-xl h-9 px-4 font-bold text-xs flex items-center gap-1.5 text-slate-700 transition-all duration-150 active:scale-95 cursor-pointer shadow-sm ${
-                currentPage >= totalPages ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
-              }`}
+              className={`border border-slate-200 hover:bg-slate-50 hover:text-slate-900 rounded-xl h-9 px-4 font-bold text-xs flex items-center gap-1.5 text-slate-700 transition-all duration-150 active:scale-95 cursor-pointer shadow-sm ${currentPage >= totalPages ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
+                }`}
             >
               Selanjutnya <ArrowRight className="h-3.5 w-3.5" />
             </Link>

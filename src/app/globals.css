@@ -4,18 +4,19 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CLAY DESIGN SYSTEM — TOKEN LAYER
-   Sourced from DESIGN_CLAY.md (version: alpha)
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   ARCHITAX DESIGN SYSTEM — WHITE + BLUE TOKEN LAYER
+   Referensi: Clay.com dashboard UI (gambar acuan)
+   Palet: Putih murni + Biru (#2563eb) sebagai primary accent
+   =================================================================== */
 
 @theme inline {
-  /* ── Font System ── */
-  --font-sans: var(--font-sans);        /* Inter — body / UI (nav-link, button, caption) */
-  --font-display: var(--font-display);  /* Plus Jakarta Sans 800 — display headlines */
-  --font-mono: var(--font-mono);        /* Geist Mono — NOP, IDs, code */
+  /* Font System */
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
+  --font-mono: var(--font-mono);
 
-  /* ── Mapped Shadcn color tokens → Clay surface tokens ── */
+  /* Mapped Shadcn color tokens */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
@@ -35,43 +36,41 @@
   --color-input: var(--input);
   --color-ring: var(--ring);
 
-  /* ── Clay Brand Palette (exposed as Tailwind colors) ── */
-  --color-clay-canvas: #fffaf0;
-  --color-clay-surface-soft: #faf5e8;
-  --color-clay-surface-card: #f5f0e0;
-  --color-clay-surface-strong: #ebe6d6;
-  --color-clay-hairline: #e5e5e5;
-  --color-clay-hairline-soft: #f0f0f0;
-  --color-clay-ink: #0a0a0a;
-  --color-clay-body: #3a3a3a;
-  --color-clay-body-strong: #1a1a1a;
-  --color-clay-muted: #6a6a6a;
-  --color-clay-muted-soft: #9a9a9a;
-  --color-clay-pink: #ff4d8b;
-  --color-clay-teal: #1a3a3a;
-  --color-clay-lavender: #b8a4ed;
-  --color-clay-peach: #ffb084;
-  --color-clay-ochre: #e8b94a;
-  --color-clay-mint: #a4d4c5;
-  --color-clay-coral: #ff6b5a;
+  /* Architax Brand Palette (white + blue) */
+  --color-arch-white: #ffffff;
+  --color-arch-surface: #f8fafc;
+  --color-arch-surface-card: #ffffff;
+  --color-arch-surface-soft: #f1f5f9;
+  --color-arch-hairline: #e2e8f0;
+  --color-arch-hairline-soft: #f1f5f9;
+  --color-arch-ink: #0f172a;
+  --color-arch-body: #334155;
+  --color-arch-body-strong: #1e293b;
+  --color-arch-muted: #64748b;
+  --color-arch-muted-soft: #94a3b8;
+  --color-arch-blue: #2563eb;
+  --color-arch-blue-dark: #1d4ed8;
+  --color-arch-blue-light: #dbeafe;
+  --color-arch-blue-soft: #eff6ff;
+  --color-arch-blue-mid: #3b82f6;
 
-  /* ── Clay Border Radius Contract ── */
-  --radius-xs:   6px;    /* small badges, dropdown items */
-  --radius-sm:   8px;    /* small buttons, hairline accents */
-  --radius-md:   12px;   /* CTA buttons, text inputs */
-  --radius-lg:   16px;   /* content cards, table wrappers, pricing tiers */
-  --radius-xl:   24px;   /* dashboard panels, form panels, feature cards */
-  --radius-pill: 9999px; /* category tabs, badge pills */
-  --radius-full: 9999px; /* avatars, icon buttons */
+  /* Border Radius Contract */
+  --radius-xs: 4px;
+  --radius-sm: 6px;
+  --radius-md: 8px;
+  --radius-lg: 10px;
+  --radius-xl: 14px;
+  --radius-pill: 9999px;
+  --radius-full: 9999px;
 
-  /* ── Charts ── */
+  /* Charts */
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
 
-  /* ── Sidebar ── */
+  /* Sidebar */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -82,68 +81,44 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CLAY :root — SEMANTIC COLOR ASSIGNMENTS
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   :root - SEMANTIC COLOR ASSIGNMENTS (White + Blue System)
+   =================================================================== */
 :root {
-  /* ── Page canvas → Clay cream warm (#fffaf0) ── */
-  --background: #fffaf0;
-  --foreground: #0a0a0a;
-
-  /* ── Card surface → Clay surface-card (#f5f0e0) ── */
-  --card: #f5f0e0;
-  --card-foreground: #0a0a0a;
-
-  /* ── Popover / Dropdown → Clay surface-soft (#faf5e8) ── */
-  --popover: #faf5e8;
-  --popover-foreground: #0a0a0a;
-
-  /* ── Primary CTA → Clay near-black (#0a0a0a) as base;
-       Architax brand-pink (#ff4d8b) is the accent ring/focus ── */
-  --primary: #0a0a0a;
+  --background: #f8fafc;
+  --foreground: #0f172a;
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+  --popover: #ffffff;
+  --popover-foreground: #0f172a;
+  --primary: #2563eb;
   --primary-foreground: #ffffff;
-
-  /* ── Secondary → Clay surface-soft ── */
-  --secondary: #faf5e8;
-  --secondary-foreground: #0a0a0a;
-
-  /* ── Muted / Subtle ── */
-  --muted: #f5f0e0;
-  --muted-foreground: #6a6a6a;
-
-  /* ── Accent → Clay surface-card ── */
-  --accent: #f5f0e0;
-  --accent-foreground: #0a0a0a;
-
-  /* ── Semantic Danger ── */
+  --secondary: #f1f5f9;
+  --secondary-foreground: #0f172a;
+  --muted: #f1f5f9;
+  --muted-foreground: #64748b;
+  --accent: #eff6ff;
+  --accent-foreground: #1d4ed8;
   --destructive: #ef4444;
-
-  /* ── Hairline border (1px Clay system border) ── */
-  --border: #e5e5e5;
-  --input:  #e5e5e5;
-
-  /* ── Focus ring → Architax brand-pink ── */
-  --ring: #ff4d8b;
-
-  /* ── Chart palette ── */
-  --chart-1: #ff4d8b;
-  --chart-2: #a4d4c5;
-  --chart-3: #e8b94a;
-  --chart-4: #b8a4ed;
-  --chart-5: #ffb084;
-
-  /* ── Sidebar surface → Clay surface-soft (#faf5e8) ── */
-  --sidebar: #faf5e8;
-  --sidebar-foreground: #0a0a0a;
-  --sidebar-primary: #ff4d8b;
+  --border: #e2e8f0;
+  --input: #e2e8f0;
+  --ring: #2563eb;
+  --chart-1: #2563eb;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #f43f5e;
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #2563eb;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f5f0e0;
-  --sidebar-accent-foreground: #0a0a0a;
-  --sidebar-border: #e5e5e5;
-  --sidebar-ring: #ff4d8b;
+  --sidebar-accent: #eff6ff;
+  --sidebar-accent-foreground: #1d4ed8;
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: #2563eb;
 }
 
-/* Dark mode (kept minimal — Clay doesn't define a dark mode) */
+/* Dark mode */
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
@@ -151,8 +126,8 @@
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
+  --primary: #3b82f6;
+  --primary-foreground: #ffffff;
   --secondary: oklch(0.269 0 0);
   --secondary-foreground: oklch(0.985 0 0);
   --muted: oklch(0.269 0 0);
@@ -162,25 +137,25 @@
   --destructive: oklch(0.704 0.191 22.216);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: #ff4d8b;
-  --chart-2: #a4d4c5;
-  --chart-3: #e8b94a;
-  --chart-4: #b8a4ed;
-  --chart-5: #ffb084;
+  --ring: #3b82f6;
+  --chart-1: #3b82f6;
+  --chart-2: #10b981;
+  --chart-3: #f59e0b;
+  --chart-4: #8b5cf6;
+  --chart-5: #f43f5e;
   --sidebar: oklch(0.205 0 0);
   --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: #ff4d8b;
+  --sidebar-primary: #3b82f6;
   --sidebar-primary-foreground: #ffffff;
   --sidebar-accent: oklch(0.269 0 0);
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: #ff4d8b;
+  --sidebar-ring: #3b82f6;
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   BASE LAYER — Root resets + font assignments
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   BASE LAYER
+   =================================================================== */
 @layer base {
   * {
     @apply border-border outline-ring/50;
@@ -188,9 +163,7 @@
   }
 
   html {
-    /* Inter as the global UI / body font */
     font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, sans-serif;
-    /* Inter OpenType features: tabular nums, stylistic alternates */
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
@@ -199,244 +172,388 @@
 
   body {
     @apply bg-background text-foreground;
-    /* Clay body-sm spec: 14px / 400 / lh 1.55 */
     font-size: 14px;
     line-height: 1.55;
     font-weight: 400;
-    color: #3a3a3a; /* clay.body */
+    color: #334155;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CLAY TYPOGRAPHY SYSTEM
-   Following DESIGN_CLAY.md typography token spec precisely
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   TYPOGRAPHY SYSTEM
+   =================================================================== */
 @layer base {
-  /*
-   * Display headlines → Plus Jakarta Sans
-   * (Substitute for Clay's proprietary "Plain Black" font)
-   * Key: weight 800 + tight negative tracking, NOT 700
-   */
-  h1, h2, h3, h4,
-  .clay-heading,
+
+  h1,
+  h2,
+  h3,
+  h4,
+  .arch-heading,
   .font-display {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-    font-weight: 800;
-    line-height: 1.15;
-    color: #0a0a0a; /* clay.ink */
-    font-feature-settings: "kern" 1, "liga" 1, "calt" 1;
+    font-weight: 700;
+    line-height: 1.2;
+    color: #0f172a;
+    font-feature-settings: "kern" 1, "liga" 1;
     text-rendering: optimizeLegibility;
   }
 
-  /* display-xl: 72px / -2.5px tracking */
   h1 {
-    font-size: clamp(2rem, 5vw, 4.5rem);
-    letter-spacing: -0.045em; /* ≈ -2.5px at 56px */
-  }
-
-  /* display-lg: 56px / -2px tracking */
-  h2 {
-    font-size: clamp(1.5rem, 3.5vw, 3.5rem);
-    letter-spacing: -0.04em;
-  }
-
-  /* display-md: 40px / -1px tracking */
-  h3 {
-    font-size: clamp(1.25rem, 2.5vw, 2rem);
+    font-size: clamp(1.75rem, 4vw, 2.5rem);
     letter-spacing: -0.03em;
-    font-weight: 800;
   }
 
-  /* display-sm: 32px / -0.5px tracking */
-  h4 {
-    font-size: clamp(1rem, 2vw, 1.5rem);
+  h2 {
+    font-size: clamp(1.375rem, 3vw, 1.875rem);
     letter-spacing: -0.02em;
-    font-weight: 800;
   }
 
-  /* ── Body & UI elements → Inter ── */
-  p, span, label, input, textarea, select, button, a, li, td, th {
+  h3 {
+    font-size: clamp(1.125rem, 2vw, 1.375rem);
+    letter-spacing: -0.01em;
+    font-weight: 600;
+  }
+
+  h4 {
+    font-size: clamp(1rem, 1.5vw, 1.125rem);
+    letter-spacing: 0;
+    font-weight: 600;
+  }
+
+  p,
+  span,
+  label,
+  input,
+  textarea,
+  select,
+  button,
+  a,
+  li,
+  td,
+  th {
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
     font-feature-settings: "cv02", "cv03", "cv04", "cv11", "tnum";
   }
 
-  /* Nav links → Clay nav-link spec: Inter 14px / 500 */
-  nav a, nav button, nav span {
-    font-size: 14px;
+  nav a,
+  nav button,
+  nav span {
+    font-size: 13.5px;
     font-weight: 500;
     letter-spacing: 0;
   }
 
-  /* Buttons → Clay button spec: Inter 14px / 600 */
   button[type="submit"],
   button[type="button"] {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     letter-spacing: 0;
   }
 
-  /* Mono — NOP/ID numbers, code, kbd */
-  kbd, code, pre, .font-mono {
+  kbd,
+  code,
+  pre,
+  .font-mono {
     font-family: var(--font-mono), ui-monospace, monospace;
   }
 }
 
-/* ═══════════════════════════════════════════════════════════════════════════
-   CLAY UTILITY CLASSES
-   ═══════════════════════════════════════════════════════════════════════════ */
+/* ===================================================================
+   UTILITY CLASSES
+   =================================================================== */
 @layer utilities {
-  /* Force display (Plus Jakarta Sans) on any element */
   .font-display {
     font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif !important;
-    font-weight: 800;
-    letter-spacing: -0.04em;
+    font-weight: 700;
+    letter-spacing: -0.025em;
   }
 
-  /* Clay display-xl — the big hero headline */
-  .clay-display-xl {
-    font-family: var(--font-display), ui-sans-serif, system-ui, sans-serif;
-    font-size: 4.5rem;
-    font-weight: 800;
-    letter-spacing: -0.045em;
-    line-height: 1;
-  }
-
-  /* Clay caption-uppercase — section labels */
-  .clay-caption-upper {
+  /* Section label */
+  .arch-caption-upper {
     font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
-    font-size: 12px;
+    font-size: 10.5px;
     font-weight: 600;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.08em;
     text-transform: uppercase;
   }
 
-  /* ── Status badge palette (Clay semantic colors) ── */
-  /* COMPLETED / APPROVED → mint/green */
-  .badge-completed {
-    background-color: #d1fae5;
-    color: #065f46;
-    border: 1px solid #a7f3d0;
+  /* Clay alias - backward compat */
+  .clay-caption-upper {
+    font-family: var(--font-sans), ui-sans-serif, system-ui, sans-serif;
+    font-size: 10.5px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
   }
 
-  /* SUBMITTED / ACTIVE */
+  /* Status badges */
+  .badge-completed {
+    background-color: #dcfce7;
+    color: #166534;
+    border: 1px solid #bbf7d0;
+  }
+
   .badge-submitted {
     background-color: #dbeafe;
     color: #1e40af;
     border: 1px solid #bfdbfe;
   }
 
-  /* REVISION / RE_EXAMINE → Clay brand-peach */
   .badge-revision {
-    background-color: #fff0e6;
-    color: #9a3412;
-    border: 1px solid #fed7aa;
+    background-color: #fef3c7;
+    color: #92400e;
+    border: 1px solid #fde68a;
   }
 
-  /* REJECTED / DANGER → Clay brand-pink muted */
   .badge-rejected {
-    background-color: #fce7f3;
-    color: #9d174d;
-    border: 1px solid #fbcfe8;
+    background-color: #fee2e2;
+    color: #991b1b;
+    border: 1px solid #fecaca;
   }
 
-  /* PENDING / WAITING → Clay brand-ochre muted */
   .badge-pending {
     background-color: #fefce8;
     color: #854d0e;
     border: 1px solid #fde68a;
   }
 
-  /* ARCHIVED / NEUTRAL → Clay surface-card */
   .badge-neutral {
-    background-color: #f5f0e0;
-    color: #3a3a3a;
-    border: 1px solid #e5e5e5;
+    background-color: #f1f5f9;
+    color: #475569;
+    border: 1px solid #e2e8f0;
   }
 
-  /* ── Clay physical micro-interaction — press effect ── */
+  /* Press micro-interaction */
+  .arch-press {
+    @apply transition-all duration-150 ease-out active:scale-[0.98];
+  }
+
   .clay-press {
     @apply transition-all duration-150 ease-out active:scale-[0.98];
   }
 
-  /* ── Clay button: primary (near-black, 44px, rounded-md 12px) ── */
-  .btn-clay-primary {
-    height: 44px;
-    padding: 0 20px;
-    border-radius: 12px;
-    background-color: #0a0a0a;
+  /* Primary button: blue */
+  .btn-arch-primary {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    background-color: #2563eb;
     color: #ffffff;
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 600;
     border: none;
     cursor: pointer;
-    transition: background-color 150ms ease-out, transform 150ms ease-out;
+    transition: background-color 150ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
-  .btn-clay-primary:hover { background-color: #1f1f1f; }
-  .btn-clay-primary:active { transform: scale(0.98); }
-  .btn-clay-primary:disabled { background-color: #e5e5e5; color: #6a6a6a; cursor: not-allowed; }
 
-  /* ── Clay button: secondary (canvas bg + hairline border) ── */
-  .btn-clay-secondary {
-    height: 44px;
-    padding: 0 20px;
-    border-radius: 12px;
-    background-color: #fffaf0;
-    color: #0a0a0a;
-    font-size: 14px;
+  .btn-arch-primary:hover {
+    background-color: #1d4ed8;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.25);
+  }
+
+  .btn-arch-primary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-arch-primary:disabled {
+    background-color: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+
+  /* Clay alias */
+  .btn-clay-primary {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    background-color: #2563eb;
+    color: #ffffff;
+    font-size: 13px;
     font-weight: 600;
-    border: 1px solid #e5e5e5;
+    border: none;
     cursor: pointer;
-    transition: background-color 150ms ease-out, transform 150ms ease-out;
+    transition: background-color 150ms ease-out, transform 150ms ease-out, box-shadow 150ms ease-out;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
-  .btn-clay-secondary:hover { background-color: #f5f0e0; }
-  .btn-clay-secondary:active { transform: scale(0.98); }
 
-  /* ── Clay button: danger/critical (brand-pink muted) ── */
-  .btn-clay-danger {
-    height: 44px;
-    padding: 0 20px;
-    border-radius: 12px;
-    background-color: #fce7f3;
-    color: #9d174d;
-    font-size: 14px;
+  .btn-clay-primary:hover {
+    background-color: #1d4ed8;
+  }
+
+  .btn-clay-primary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-clay-primary:disabled {
+    background-color: #e2e8f0;
+    color: #94a3b8;
+    cursor: not-allowed;
+  }
+
+  /* Secondary button */
+  .btn-arch-secondary {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-size: 13px;
     font-weight: 600;
-    border: 1px solid #fbcfe8;
+    border: 1px solid #e2e8f0;
     cursor: pointer;
     transition: all 150ms ease-out;
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    gap: 8px;
+    gap: 6px;
   }
-  .btn-clay-danger:hover { background-color: #fdf2f8; border-color: #f9a8d4; }
-  .btn-clay-danger:active { transform: scale(0.98); }
 
-  /* ── Clay text-input (44px, hairline border, canvas bg, rounded-md) ── */
-  .input-clay {
-    height: 44px;
+  .btn-arch-secondary:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+  }
+
+  .btn-arch-secondary:active {
+    transform: scale(0.98);
+  }
+
+  .btn-clay-secondary {
+    height: 36px;
     padding: 0 16px;
-    border-radius: 12px;
-    background-color: #fffaf0;
-    color: #0a0a0a;
-    font-size: 14px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #e2e8f0;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-clay-secondary:hover {
+    background-color: #f8fafc;
+    border-color: #cbd5e1;
+  }
+
+  .btn-clay-secondary:active {
+    transform: scale(0.98);
+  }
+
+  /* Danger button */
+  .btn-arch-danger {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #fecaca;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-arch-danger:hover {
+    background-color: #fef2f2;
+    border-color: #fca5a5;
+  }
+
+  .btn-arch-danger:active {
+    transform: scale(0.98);
+  }
+
+  .btn-clay-danger {
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 8px;
+    background-color: #fee2e2;
+    color: #991b1b;
+    font-size: 13px;
+    font-weight: 600;
+    border: 1px solid #fecaca;
+    cursor: pointer;
+    transition: all 150ms ease-out;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  .btn-clay-danger:hover {
+    background-color: #fef2f2;
+  }
+
+  .btn-clay-danger:active {
+    transform: scale(0.98);
+  }
+
+  /* Text input */
+  .input-arch {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-size: 13.5px;
     font-weight: 400;
-    border: 1px solid #e5e5e5;
+    border: 1px solid #e2e8f0;
     outline: none;
     transition: border-color 200ms ease-out, box-shadow 200ms ease-out;
     width: 100%;
   }
-  .input-clay::placeholder { color: #9a9a9a; }
-  .input-clay:hover { border-color: #c8c8c8; }
+
+  .input-arch::placeholder {
+    color: #94a3b8;
+  }
+
+  .input-arch:hover {
+    border-color: #cbd5e1;
+  }
+
+  .input-arch:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+  }
+
+  .input-clay {
+    height: 36px;
+    padding: 0 12px;
+    border-radius: 8px;
+    background-color: #ffffff;
+    color: #0f172a;
+    font-size: 13.5px;
+    font-weight: 400;
+    border: 1px solid #e2e8f0;
+    outline: none;
+    transition: border-color 200ms ease-out, box-shadow 200ms ease-out;
+    width: 100%;
+  }
+
+  .input-clay::placeholder {
+    color: #94a3b8;
+  }
+
+  .input-clay:hover {
+    border-color: #cbd5e1;
+  }
+
   .input-clay:focus {
-    border-color: #0a0a0a; /* Clay: border thickens to ink on focus */
-    box-shadow: 0 0 0 3px rgba(255, 77, 139, 0.12);
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
   }
 }

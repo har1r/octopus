@@ -1,28 +1,9 @@
+// src/components/app-navbar.tsx
 'use client';
 
 import * as React from 'react';
-import { Bell, ChevronDown, LogOut, Search, Settings, User } from 'lucide-react';
 import { logoutAction } from '@/actions/auth.actions';
-import { cn } from '@/lib/utils';
 import { UserRole } from '@prisma/client';
-
-/*
- * Clay Design Tokens
- */
-const C = {
-  canvas:       '#fffaf0',   /* top-nav bg — Clay canvas */
-  surfaceSoft:  '#faf5e8',   /* navbar bg — surface-soft */
-  surfaceCard:  '#f5f0e0',   /* hover states */
-  hairline:     '#e5e5e5',   /* 1px borders */
-  hairlineSoft: '#f0f0f0',   /* dividers */
-  ink:          '#0a0a0a',
-  bodyStrong:   '#1a1a1a',
-  body:         '#3a3a3a',
-  muted:        '#6a6a6a',
-  mutedSoft:    '#9a9a9a',
-  pink:         '#ff4d8b',   /* Architax accent */
-  mint:         '#a4d4c5',   /* online dot */
-} as const;
 
 interface Notification {
   id: string;
@@ -38,399 +19,305 @@ interface AppNavbarProps {
   mobileMenuButton: React.ReactNode;
 }
 
-const roleLabelMap: Record<string, string> = {
-  STAF_PENGINPUT: 'Staf Penginput',
-  STAF_PENELITI:  'Staf Peneliti',
-  STAF_PENGARSIP: 'Staf Pengarsip',
-  STAF_PENGIRIM:  'Staf Pengirim',
-  STAF_PEMANTAU:  'Staf Pemantau',
-  SUPERVISOR:     'Supervisor',
-};
-
 const mockNotifications: Notification[] = [
   { id: '1', title: 'Permohonan Baru', body: 'Berkas BRK-2026-00142 menunggu validasi.', time: '2 mnt lalu', unread: true },
-  { id: '2', title: 'Revisi Diminta',  body: 'BRK-2026-00138 dikembalikan untuk revisi.', time: '14 mnt lalu', unread: true },
-  { id: '3', title: 'Bundle Siap Kirim', body: 'BND-2026-00021 siap dikirim ke pusat.', time: '1 jam lalu', unread: false },
+  { id: '2', title: 'Revisi Diminta', body: 'BRK-2026-00138 dikembalikan untuk revisi.', time: '14 mnt lalu', unread: true },
 ];
 
 export function AppNavbar({ userName, userRole, mobileMenuButton }: AppNavbarProps) {
-  const [searchFocused, setSearchFocused] = React.useState(false);
-  const [searchValue, setSearchValue]     = React.useState('');
-  const [notifOpen, setNotifOpen]         = React.useState(false);
-  const [userMenuOpen, setUserMenuOpen]   = React.useState(false);
+  const [notifOpen, setNotifOpen] = React.useState(false);
+  const [userMenuOpen, setUserMenuOpen] = React.useState(false);
 
-  const notifRef   = React.useRef<HTMLDivElement>(null);
+  const notifRef = React.useRef<HTMLDivElement>(null);
   const userMenuRef = React.useRef<HTMLDivElement>(null);
   const unreadCount = mockNotifications.filter(n => n.unread).length;
 
-  const initials = userName.split(' ').map(w => w[0]).slice(0, 2).join('').toUpperCase();
-
-  // Click-outside to close
+  // Click-outside listner
   React.useEffect(() => {
-    const h = (e: MouseEvent) => {
-      if (notifRef.current && !notifRef.current.contains(e.target as Node)) setNotifOpen(false);
-      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) setUserMenuOpen(false);
-    };
-    document.addEventListener('mousedown', h);
-    return () => document.removeEventListener('mousedown', h);
-  }, []);
-
-  // ⌘K shortcut
-  React.useEffect(() => {
-    const h = (e: KeyboardEvent) => {
-      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
-        e.preventDefault();
-        document.getElementById('navbar-search')?.focus();
+    const handleClickOutside = (e: MouseEvent) => {
+      if (notifRef.current && !notifRef.current.contains(e.target as Node)) {
+        setNotifOpen(false);
+      }
+      if (userMenuRef.current && !userMenuRef.current.contains(e.target as Node)) {
+        setUserMenuOpen(false);
       }
     };
-    document.addEventListener('keydown', h);
-    return () => document.removeEventListener('keydown', h);
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
+  // Custom SVG Icons
+  const GridIcon = (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="7" height="7" />
+      <rect x="14" y="3" width="7" height="7" />
+      <rect x="14" y="14" width="7" height="7" />
+      <rect x="3" y="14" width="7" height="7" />
+    </svg>
+  );
+
+  const HelpIcon = (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="10" />
+      <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
+      <line x1="12" y1="17" x2="12.01" y2="17" />
+    </svg>
+  );
+
+  const BellIcon = (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9" />
+      <path d="M13.73 21a2 2 0 0 1-3.46 0" />
+    </svg>
+  );
+
+  const LogOutIcon = (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+      <polyline points="16 17 21 12 16 7" />
+      <line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+  );
+
   return (
-    /*
-     * Navbar — Clay top-nav spec:
-     * bg: canvas (#fffaf0), height: 60px (≈ Clay 64px),
-     * border-bottom: 1px hairline #e5e5e5, NO shadow
-     */
     <header
       style={{
-        height: 60,
-        backgroundColor: C.canvas,
-        borderBottom: `1px solid ${C.hairline}`,
+        height: '46px',
+        backgroundColor: '#ffffff',
+        borderBottom: '1px solid #F3F4F6',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'space-between',
-        padding: '0 20px',
+        padding: '0 16px',
         flexShrink: 0,
-        gap: 16,
         zIndex: 40,
         position: 'relative',
+        fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       }}
     >
-
-      {/* ── Left: Mobile toggle + tagline ───────────── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 12, minWidth: 0 }}>
+      {/* Left items (mobile toggle wrapper) */}
+      <div style={{ display: 'flex', alignItems: 'center' }}>
         {mobileMenuButton}
-        <div className="hidden sm:block" style={{ minWidth: 0 }}>
-          {/* Clay title-sm: Inter 16px / 600 */}
-          <p style={{ fontSize: 14, fontWeight: 600, color: C.bodyStrong, lineHeight: 1.3, whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>
-            Sistem Alur Kerja PBB
-          </p>
-          {/* Clay caption-uppercase */}
-          <p style={{ fontSize: 11, fontWeight: 600, color: C.mutedSoft, letterSpacing: '0.08em', textTransform: 'uppercase', lineHeight: 1.3 }}>
-            Architax · {roleLabelMap[userRole] ?? userRole}
-          </p>
-        </div>
       </div>
 
-      {/* ── Center: Search ─────────────────────────── */}
-      {/*
-       * Clay text-input spec:
-       * height 44px, bg canvas, hairline border 1px,
-       * rounded-md (12px), focus: border → ink, ring pink
-       */}
-      <div
-        className="hidden md:flex items-center gap-2"
-        style={{
-          height: 44,
-          borderRadius: 12,
-          border: `1px solid ${searchFocused ? C.ink : C.hairline}`,
-          backgroundColor: C.canvas,
-          padding: '0 12px',
-          width: searchFocused ? 320 : 256,
-          transition: 'width 300ms ease-out, border-color 200ms ease-out, box-shadow 200ms ease-out',
-          boxShadow: searchFocused ? `0 0 0 3px rgba(255,77,139,0.12)` : 'none',
-        }}
-      >
-        <Search
-          className="h-3.5 w-3.5 flex-shrink-0"
-          style={{ color: searchFocused ? C.ink : C.mutedSoft, transition: 'color 200ms' }}
-        />
-        <input
-          id="navbar-search"
-          type="text"
-          placeholder="Cari permohonan, bundle..."
-          value={searchValue}
-          onChange={e => setSearchValue(e.target.value)}
-          onFocus={() => setSearchFocused(true)}
-          onBlur={() => setSearchFocused(false)}
+      {/* Spacer */}
+      <div style={{ flex: 1 }} />
+
+      {/* Right Aligned Area */}
+      <div style={{ display: 'flex', alignItems: 'center', gap: '14px' }}>
+        {/* Blue Upgrade Button */}
+        <button
           style={{
-            flex: 1, background: 'transparent',
-            fontSize: 14, fontWeight: 400, color: C.ink,
-            outline: 'none', border: 'none', minWidth: 0,
+            backgroundColor: '#2563EB',
+            color: '#ffffff',
+            border: 'none',
+            borderRadius: '4px',
+            height: '26px',
+            padding: '0 10px',
+            fontSize: '11px',
+            fontWeight: 'bold',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '3px',
+            transition: 'background-color 100ms',
           }}
-        />
-        {searchValue ? (
-          <button
-            onClick={() => setSearchValue('')}
-            style={{ color: C.mutedSoft, background: 'none', border: 'none', cursor: 'pointer', fontSize: 11, fontWeight: 700 }}
-          >
-            ✕
-          </button>
-        ) : (
-          /* Clay kbd shortcut — surface-card bg */
-          <div style={{ display: 'flex', gap: 2, flexShrink: 0 }}>
-            {['⌘', 'K'].map(k => (
-              <kbd
-                key={k}
-                style={{
-                  display: 'inline-flex', alignItems: 'center', justifyContent: 'center',
-                  height: 18, minWidth: 18, padding: '0 4px',
-                  borderRadius: 4, fontSize: 9, fontWeight: 700,
-                  backgroundColor: C.surfaceCard, border: `1px solid ${C.hairline}`,
-                  color: C.muted, fontFamily: 'inherit',
-                }}
-              >
-                {k}
-              </kbd>
-            ))}
-          </div>
-        )}
-      </div>
+          onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#1d4ed8')}
+          onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = '#2563EB')}
+        >
+          ⚡ Upgrade your plan
+        </button>
 
-      {/* ── Right: Actions ─────────────────────────── */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 4, flexShrink: 0 }}>
+        {/* Grid Icon */}
+        <button
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#6B7280',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            padding: 0,
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = '#111827')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
+          title="Grid"
+        >
+          {GridIcon}
+        </button>
 
-        {/* Notification Bell */}
-        <div className="relative" ref={notifRef}>
+        {/* Help Icon */}
+        <button
+          style={{
+            background: 'none',
+            border: 'none',
+            color: '#6B7280',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            padding: 0,
+          }}
+          onMouseEnter={(e) => (e.currentTarget.style.color = '#111827')}
+          onMouseLeave={(e) => (e.currentTarget.style.color = '#6B7280')}
+          title="Bantuan"
+        >
+          {HelpIcon}
+        </button>
+
+        {/* Bell Notifications */}
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }} ref={notifRef}>
           <button
-            onClick={() => { setNotifOpen(p => !p); setUserMenuOpen(false); }}
-            aria-label="Notifikasi"
-            className="clay-press"
+            onClick={() => {
+              setNotifOpen((p) => !p);
+              setUserMenuOpen(false);
+            }}
             style={{
-              height: 40, width: 40,
-              display: 'flex', alignItems: 'center', justifyContent: 'center',
-              borderRadius: 8,
-              border: 'none', cursor: 'pointer',
-              backgroundColor: notifOpen ? C.surfaceCard : 'transparent',
-              color: notifOpen ? C.ink : C.muted,
-              transition: 'background-color 120ms, color 120ms',
+              background: 'none',
+              border: 'none',
+              color: notifOpen ? '#1D4ED8' : '#6B7280',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              padding: 0,
               position: 'relative',
             }}
-            onMouseEnter={e => {
-              (e.currentTarget as HTMLElement).style.backgroundColor = C.surfaceCard;
-              (e.currentTarget as HTMLElement).style.color = C.ink;
+            onMouseEnter={(e) => {
+              if (!notifOpen) e.currentTarget.style.color = '#111827';
             }}
-            onMouseLeave={e => {
-              if (!notifOpen) {
-                (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
-                (e.currentTarget as HTMLElement).style.color = C.muted;
-              }
+            onMouseLeave={(e) => {
+              if (!notifOpen) e.currentTarget.style.color = '#6B7280';
             }}
+            title="Notifikasi"
           >
-            <Bell className="h-[18px] w-[18px]" />
+            {BellIcon}
             {unreadCount > 0 && (
               <span
                 style={{
-                  position: 'absolute', top: 7, right: 7,
-                  height: 14, width: 14, borderRadius: 9999,
-                  backgroundColor: C.pink, color: '#fff',
-                  fontSize: 8, fontWeight: 700,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  border: `2px solid ${C.canvas}`,
+                  position: 'absolute',
+                  top: '-4px',
+                  right: '-4px',
+                  backgroundColor: '#EF4444',
+                  color: '#ffffff',
+                  width: '6px',
+                  height: '6px',
+                  borderRadius: '999px',
                 }}
-              >
-                {unreadCount}
-              </span>
+              />
             )}
           </button>
 
-          {/* Notification Dropdown — Clay product-mockup-card style */}
+          {/* Notifications Dropdown */}
           {notifOpen && (
             <div
-              className="animate-in fade-in slide-in-from-top-2 duration-200"
               style={{
-                position: 'absolute', right: 0, top: 'calc(100% + 8px)',
-                width: 300,
-                backgroundColor: C.canvas,
-                border: `1px solid ${C.hairline}`,
-                borderRadius: 16, /* Clay rounded.lg */
-                zIndex: 50, overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(10,10,10,0.08)',
+                position: 'absolute',
+                right: 0,
+                top: '24px',
+                width: '260px',
+                backgroundColor: '#ffffff',
+                border: '1px solid #E5E7EB',
+                borderRadius: '6px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                zIndex: 50,
+                padding: '4px 0',
               }}
             >
-              {/* Header */}
-              <div style={{ padding: '12px 16px', borderBottom: `1px solid ${C.hairlineSoft}`, display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <p style={{ fontSize: 14, fontWeight: 600, color: C.ink }}>Notifikasi</p>
-                {unreadCount > 0 && (
-                  <span
-                    style={{
-                      fontSize: 10, fontWeight: 700, padding: '2px 8px',
-                      borderRadius: 9999,
-                      backgroundColor: C.surfaceCard, color: C.muted,
-                      border: `1px solid ${C.hairline}`,
-                    }}
-                  >
-                    {unreadCount} belum dibaca
-                  </span>
-                )}
+              <div style={{ padding: '8px 12px', borderBottom: '1px solid #F3F4F6', fontSize: '11px', fontWeight: 'bold', color: '#111827' }}>
+                Notifications
               </div>
-
-              {/* Notification items */}
-              <div style={{ maxHeight: 280, overflowY: 'auto' }}>
-                {mockNotifications.map((n, i) => (
-                  <button
-                    key={n.id}
-                    style={{
-                      width: '100%', textAlign: 'left',
-                      padding: '12px 16px',
-                      backgroundColor: n.unread ? C.surfaceSoft : C.canvas,
-                      borderBottom: i < mockNotifications.length - 1 ? `1px solid ${C.hairlineSoft}` : 'none',
-                      border: 'none', cursor: 'pointer',
-                      transition: 'background-color 100ms',
-                    }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = C.surfaceCard}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = n.unread ? C.surfaceSoft : C.canvas}
-                  >
-                    <div style={{ display: 'flex', alignItems: 'flex-start', gap: 10 }}>
-                      {n.unread && (
-                        <span style={{ marginTop: 5, height: 7, width: 7, borderRadius: 9999, backgroundColor: C.pink, flexShrink: 0 }} />
-                      )}
-                      <div style={{ marginLeft: n.unread ? 0 : 17 }}>
-                        <p style={{ fontSize: 13, fontWeight: 600, color: C.ink }}>{n.title}</p>
-                        <p style={{ fontSize: 12, color: C.muted, marginTop: 2 }}>{n.body}</p>
-                        <p style={{ fontSize: 11, color: C.mutedSoft, marginTop: 4, fontWeight: 500 }}>{n.time}</p>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-
-              {/* Footer */}
-              <div style={{ padding: '10px 16px', borderTop: `1px solid ${C.hairlineSoft}`, textAlign: 'center' }}>
-                <button style={{ fontSize: 12, fontWeight: 600, color: C.muted, background: 'none', border: 'none', cursor: 'pointer' }}>
-                  Lihat semua notifikasi
-                </button>
-              </div>
+              {mockNotifications.map((n) => (
+                <div
+                  key={n.id}
+                  style={{
+                    padding: '8px 12px',
+                    borderBottom: '1px solid #F3F4F6',
+                    fontSize: '11px',
+                    backgroundColor: n.unread ? '#EFF6FF' : '#ffffff',
+                  }}
+                >
+                  <p style={{ fontWeight: 'bold', color: '#111827', margin: 0 }}>{n.title}</p>
+                  <p style={{ color: '#4B5563', margin: '2px 0 0 0', lineHeight: 1.3 }}>{n.body}</p>
+                </div>
+              ))}
             </div>
           )}
         </div>
 
-        {/* Hairline divider */}
-        <div style={{ height: 20, width: 1, backgroundColor: C.hairline, margin: '0 4px' }} />
-
-        {/* User Menu */}
-        <div className="relative" ref={userMenuRef}>
+        {/* Red circle "M" avatar dropdown */}
+        <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }} ref={userMenuRef}>
           <button
-            onClick={() => { setUserMenuOpen(p => !p); setNotifOpen(false); }}
-            className="clay-press"
-            style={{
-              display: 'flex', alignItems: 'center', gap: 8,
-              height: 40, padding: '0 8px 0 6px',
-              borderRadius: 8,
-              border: 'none', cursor: 'pointer',
-              backgroundColor: userMenuOpen ? C.surfaceCard : 'transparent',
-              transition: 'background-color 120ms',
+            onClick={() => {
+              setUserMenuOpen((p) => !p);
+              setNotifOpen(false);
             }}
-            onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = C.surfaceCard}
-            onMouseLeave={e => {
-              if (!userMenuOpen) (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent';
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              backgroundColor: '#EF4444', // Red avatar background
+              color: '#ffffff',
+              border: 'none',
+              borderRadius: '9999px',
+              height: '24px',
+              width: '24px',
+              fontSize: '11px',
+              fontWeight: 'bold',
+              cursor: 'pointer',
+              padding: 0,
             }}
           >
-            {/* Avatar */}
-            <div className="relative">
-              <div
-                style={{
-                  height: 28, width: 28, borderRadius: 9999,
-                  background: `linear-gradient(135deg, ${C.pink} 0%, #c0113b 100%)`,
-                  display: 'flex', alignItems: 'center', justifyContent: 'center',
-                  color: '#fff', fontSize: 11, fontWeight: 700, flexShrink: 0,
-                }}
-              >
-                {initials}
-              </div>
-              <span
-                style={{
-                  position: 'absolute', bottom: 0, right: 0,
-                  height: 8, width: 8, borderRadius: 9999,
-                  backgroundColor: C.mint,
-                  border: `1.5px solid ${C.canvas}`,
-                }}
-              />
-            </div>
-            <div className="hidden sm:block" style={{ textAlign: 'left' }}>
-              <p style={{ fontSize: 12, fontWeight: 600, color: C.bodyStrong, lineHeight: 1.2 }}>{userName.split(' ')[0]}</p>
-              <p style={{ fontSize: 10, fontWeight: 500, color: C.mutedSoft, lineHeight: 1.2 }}>{roleLabelMap[userRole] ?? userRole}</p>
-            </div>
-            <ChevronDown
-              className={cn('h-3.5 w-3.5 transition-transform duration-200', userMenuOpen ? 'rotate-180' : '')}
-              style={{ color: C.mutedSoft }}
-            />
+            M
           </button>
 
-          {/* User Dropdown */}
+          {/* User Profile Dropdown */}
           {userMenuOpen && (
             <div
-              className="animate-in fade-in slide-in-from-top-2 duration-200"
               style={{
-                position: 'absolute', right: 0, top: 'calc(100% + 8px)',
-                width: 220,
-                backgroundColor: C.canvas,
-                border: `1px solid ${C.hairline}`,
-                borderRadius: 16,
-                zIndex: 50, overflow: 'hidden',
-                boxShadow: '0 4px 20px rgba(10,10,10,0.08)',
+                position: 'absolute',
+                right: 0,
+                top: '28px',
+                width: '180px',
+                backgroundColor: '#ffffff',
+                border: '1px solid #E5E7EB',
+                borderRadius: '6px',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+                zIndex: 50,
+                padding: '4px 0',
               }}
             >
-              {/* Identity panel */}
-              <div style={{ padding: '14px 16px', borderBottom: `1px solid ${C.hairlineSoft}` }}>
-                <p style={{ fontSize: 13, fontWeight: 700, color: C.ink, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{userName}</p>
-                <p style={{ fontSize: 11, fontWeight: 500, color: C.muted, marginTop: 2 }}>{roleLabelMap[userRole] ?? userRole}</p>
-                <div style={{ display: 'flex', alignItems: 'center', gap: 5, marginTop: 6 }}>
-                  <span style={{ height: 7, width: 7, borderRadius: 9999, backgroundColor: C.mint }} />
-                  <span style={{ fontSize: 11, fontWeight: 600, color: C.mint }}>Online</span>
-                </div>
+              <div style={{ padding: '8px 12px', borderBottom: '1px solid #F3F4F6' }}>
+                <p style={{ fontSize: '11px', fontWeight: 'bold', color: '#111827', margin: 0, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  {userName}
+                </p>
+                <p style={{ fontSize: '9.5px', color: '#6B7280', margin: '2px 0 0 0' }}>
+                  {userRole}
+                </p>
               </div>
 
-              {/* Menu items */}
-              <div style={{ padding: '4px 0' }}>
-                {[
-                  { icon: User, label: 'Profil Saya' },
-                  { icon: Settings, label: 'Pengaturan' },
-                ].map(({ icon: Icon, label }) => (
-                  <button
-                    key={label}
-                    disabled
-                    style={{
-                      width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '9px 16px',
-                      fontSize: 13, fontWeight: 500, color: C.muted,
-                      background: 'none', border: 'none', cursor: 'not-allowed',
-                      textAlign: 'left',
-                    }}
-                  >
-                    <Icon className="h-4 w-4" />
-                    {label}
-                    <span style={{ marginLeft: 'auto', fontSize: 10, color: C.mutedSoft }}>Segera</span>
-                  </button>
-                ))}
-              </div>
-
-              {/* Logout — Clay btn-clay-danger style */}
-              <div style={{ padding: '4px 0', borderTop: `1px solid ${C.hairlineSoft}` }}>
-                <form action={logoutAction}>
-                  <button
-                    type="submit"
-                    className="clay-press"
-                    style={{
-                      width: '100%', display: 'flex', alignItems: 'center', gap: 10,
-                      padding: '9px 16px',
-                      fontSize: 13, fontWeight: 600,
-                      color: '#9d174d',      /* Clay badge-rejected text */
-                      background: 'none', border: 'none', cursor: 'pointer',
-                      textAlign: 'left',
-                      borderRadius: '0 0 16px 16px',
-                      transition: 'background-color 120ms',
-                    }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.backgroundColor = '#fce7f3'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.backgroundColor = 'transparent'}
-                  >
-                    <LogOut className="h-4 w-4" />
-                    Keluar dari Sistem
-                  </button>
-                </form>
-              </div>
+              <form action={logoutAction} style={{ margin: 0 }}>
+                <button
+                  type="submit"
+                  style={{
+                    width: '100%',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    padding: '8px 12px',
+                    fontSize: '11px',
+                    fontWeight: 'bold',
+                    color: '#EF4444',
+                    background: 'none',
+                    border: 'none',
+                    textAlign: 'left',
+                    cursor: 'pointer',
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = '#fef2f2')}
+                  onMouseLeave={(e) => (e.currentTarget.style.backgroundColor = 'transparent')}
+                >
+                  {LogOutIcon}
+                  Sign out
+                </button>
+              </form>
             </div>
           )}
         </div>

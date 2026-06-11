@@ -65,8 +65,8 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
     redirect('/forbidden');
   }
 
-  const isEditable = 
-    session.user.role === 'STAF_PENGINPUT' && 
+  const isEditable =
+    session.user.role === 'STAF_PENGINPUT' &&
     (permohonan.status === ApplicationStatus.SUBMITTED || permohonan.status === ApplicationStatus.REVISION);
 
   return (
