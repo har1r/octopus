@@ -64,6 +64,17 @@ export const permohonanSchema = z.object({
     }
   }
 
+  // Validate details for OBJEK_PAJAK_BARU
+  if (data.serviceType === ServiceType.OBJEK_PAJAK_BARU) {
+    if (data.details.length !== 1) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        path: ['details'],
+        message: 'Rincian objek pajak baru wajib diisi',
+      });
+    }
+  }
+
   // BR-008 & BR-009: land / building validation for MUTASI_SEBAGIAN
   if (data.serviceType === ServiceType.MUTASI_SEBAGIAN) {
     const oldLand = data.oldLandArea || 0;

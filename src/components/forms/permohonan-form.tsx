@@ -128,7 +128,7 @@ interface StyledButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement
   variant?: 'primary' | 'secondary' | 'danger' | 'dashed';
 }
 
-function StyledButton({ variant = 'primary', children, ...props }: StyledButtonProps) {
+function StyledButton({ variant = 'primary', children, style, ...props }: StyledButtonProps) {
   const [hovered, setHovered] = React.useState(false);
   const [pressed, setPressed] = React.useState(false);
 
@@ -142,15 +142,15 @@ function StyledButton({ variant = 'primary', children, ...props }: StyledButtonP
         };
       case 'secondary':
         return {
-          backgroundColor: hovered ? '#EFF6FF' : '#ffffff',
-          color: '#2563EB',
-          border: '1px solid #2563EB',
+          backgroundColor: hovered ? '#F9FAFB' : '#ffffff',
+          color: '#374151',
+          border: '1px solid #D1D5DB',
         };
       case 'danger':
         return {
-          backgroundColor: hovered ? '#EFF6FF' : '#ffffff',
-          color: '#2563EB',
-          border: '1px solid #2563EB',
+          backgroundColor: hovered ? '#FEE2E2' : '#ffffff',
+          color: '#EF4444',
+          border: '1px solid #FCA5A5',
         };
       case 'dashed':
         return {
@@ -173,7 +173,8 @@ function StyledButton({ variant = 'primary', children, ...props }: StyledButtonP
         borderRadius: '6px',
         fontSize: '12px',
         fontWeight: 'bold',
-        cursor: 'pointer',
+        cursor: props.disabled ? 'not-allowed' : 'pointer',
+        opacity: props.disabled ? 0.5 : 1,
         display: 'inline-flex',
         alignItems: 'center',
         justifyContent: 'center',
@@ -183,7 +184,7 @@ function StyledButton({ variant = 'primary', children, ...props }: StyledButtonP
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
         userSelect: 'none',
         ...getStyles(),
-        ...props.style,
+        ...style,
       }}
       {...props}
     >
@@ -365,24 +366,47 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
         oldLandArea: initialData.oldLandArea || 0,
         oldBuildingArea: initialData.oldBuildingArea || 0,
         applicantPhone: initialData.applicantPhone || '',
-        details: initialData.details.map(d => ({
-          newOwnerName: d.newOwnerName,
-          newOwnerStreet: d.newOwnerStreet,
-          newOwnerBlock: d.newOwnerBlock,
-          newOwnerRt: d.newOwnerRt,
-          newOwnerRw: d.newOwnerRw,
-          newOwnerDistrict: d.newOwnerDistrict,
-          newOwnerVillage: d.newOwnerVillage,
-          newPropertyStreet: d.newPropertyStreet,
-          newPropertyBlock: d.newPropertyBlock,
-          newPropertyRt: d.newPropertyRt,
-          newPropertyRw: d.newPropertyRw,
-          newPropertyDistrict: d.newPropertyDistrict,
-          newPropertyVillage: d.newPropertyVillage,
-          newLandArea: d.newLandArea,
-          newBuildingArea: d.newBuildingArea,
-          ownershipProof: d.ownershipProof,
-        })),
+        details: initialData.details && initialData.details.length > 0
+          ? initialData.details.map(d => ({
+            newOwnerName: d.newOwnerName || '',
+            newOwnerStreet: d.newOwnerStreet || '',
+            newOwnerBlock: d.newOwnerBlock || '',
+            newOwnerRt: d.newOwnerRt || '',
+            newOwnerRw: d.newOwnerRw || '',
+            newOwnerDistrict: d.newOwnerDistrict || '',
+            newOwnerVillage: d.newOwnerVillage || '',
+            newPropertyStreet: d.newPropertyStreet || '',
+            newPropertyBlock: d.newPropertyBlock || '',
+            newPropertyRt: d.newPropertyRt || '',
+            newPropertyRw: d.newPropertyRw || '',
+            newPropertyDistrict: d.newPropertyDistrict || '',
+            newPropertyVillage: d.newPropertyVillage || '',
+            newLandArea: Number(d.newLandArea) || 0,
+            newBuildingArea: Number(d.newBuildingArea) || 0,
+            ownershipProof: d.ownershipProof || '',
+          }))
+          : initialData.serviceType === ServiceType.OBJEK_PAJAK_BARU
+            ? [
+              {
+                newOwnerName: '',
+                newOwnerStreet: '',
+                newOwnerBlock: '',
+                newOwnerRt: '',
+                newOwnerRw: '',
+                newOwnerDistrict: '',
+                newOwnerVillage: '',
+                newPropertyStreet: '',
+                newPropertyBlock: '',
+                newPropertyRt: '',
+                newPropertyRw: '',
+                newPropertyDistrict: '',
+                newPropertyVillage: '',
+                newLandArea: 0,
+                newBuildingArea: 0,
+                ownershipProof: '',
+              }
+            ]
+            : [],
       }
       : {
         nop: '',
@@ -404,7 +428,26 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
         oldLandArea: 0,
         oldBuildingArea: 0,
         applicantPhone: '',
-        details: [],
+        details: [
+          {
+            newOwnerName: '',
+            newOwnerStreet: '',
+            newOwnerBlock: '',
+            newOwnerRt: '',
+            newOwnerRw: '',
+            newOwnerDistrict: '',
+            newOwnerVillage: '',
+            newPropertyStreet: '',
+            newPropertyBlock: '',
+            newPropertyRt: '',
+            newPropertyRw: '',
+            newPropertyDistrict: '',
+            newPropertyVillage: '',
+            newLandArea: 0,
+            newBuildingArea: 0,
+            ownershipProof: '',
+          }
+        ],
       },
   });
 
@@ -439,7 +482,7 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
 
         if (result.success) {
           toast.success(initialData ? 'Permohonan berhasil diperbarui' : 'Permohonan berhasil disimpan');
-          router.push('/permohonan');
+          router.push('/dashboard');
           router.refresh();
         } else {
           toast.error(result.error || 'Gagal memproses permohonan');
@@ -488,7 +531,7 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
       <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z" />
     </svg>
-   );
+  );
 
   const UserInputIcon = (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round" strokeLinejoin="round">
@@ -528,8 +571,7 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
     <form
       onSubmit={handleSubmit(onSubmit)}
       style={{
-        maxWidth: '1120px',
-        margin: '0 auto',
+        width: '100%',
         paddingBottom: '40px',
         fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif',
       }}
@@ -558,11 +600,8 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
               letterSpacing: '-0.02em',
             }}
           >
-            {initialData ? 'Perbaiki Permohonan' : 'Form Permohonan Baru'}
+            {initialData ? 'Perbaiki Permohonan' : 'Form Permohonan'}
           </h1>
-          <p style={{ fontSize: '11px', color: '#6B7280', margin: '2px 0 0 0' }}>
-            {initialData ? `Nomor Berkas: ${initialData.nomorBerkas}` : 'Isi formulir pendaftaran pelayanan PBB di bawah ini'}
-          </p>
         </div>
       </div>
 
@@ -580,7 +619,6 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
           {/* Card 1: Core Service Info */}
           <StyledCard
             title="Informasi Layanan & NOP"
-            description="Tentukan jenis pelayanan dan isi NOP Objek Pajak"
             icon={LayananIcon}
           >
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '16px' }}>
@@ -592,14 +630,24 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
                   onChange={(e) => {
                     const val = e.target.value as ServiceType;
                     setValue('serviceType', val, { shouldValidate: true });
-                    if (val !== ServiceType.MUTASI_SEBAGIAN) {
-                      setValue('details', []);
-                    } else if (fields.length === 0) {
-                      append({
-                        newOwnerName: '', newOwnerStreet: '', newOwnerBlock: '', newOwnerRt: '', newOwnerRw: '', newOwnerDistrict: '', newOwnerVillage: '',
-                        newPropertyStreet: '', newPropertyBlock: '', newPropertyRt: '', newPropertyRw: '', newPropertyDistrict: '', newPropertyVillage: '',
-                        newLandArea: 0, newBuildingArea: 0, ownershipProof: ''
-                      });
+                    if (val === ServiceType.OBJEK_PAJAK_BARU) {
+                      setValue('details', [
+                        {
+                          newOwnerName: '', newOwnerStreet: '', newOwnerBlock: '', newOwnerRt: '', newOwnerRw: '', newOwnerDistrict: '', newOwnerVillage: '',
+                          newPropertyStreet: '', newPropertyBlock: '', newPropertyRt: '', newPropertyRw: '', newPropertyDistrict: '', newPropertyVillage: '',
+                          newLandArea: 0, newBuildingArea: 0, ownershipProof: ''
+                        }
+                      ], { shouldValidate: true });
+                    } else if (val === ServiceType.MUTASI_SEBAGIAN) {
+                      if (fields.length === 0) {
+                        append({
+                          newOwnerName: '', newOwnerStreet: '', newOwnerBlock: '', newOwnerRt: '', newOwnerRw: '', newOwnerDistrict: '', newOwnerVillage: '',
+                          newPropertyStreet: '', newPropertyBlock: '', newPropertyRt: '', newPropertyRw: '', newPropertyDistrict: '', newPropertyVillage: '',
+                          newLandArea: 0, newBuildingArea: 0, ownershipProof: ''
+                        });
+                      }
+                    } else {
+                      setValue('details', [], { shouldValidate: true });
                     }
                   }}
                 >
@@ -624,12 +672,12 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
                 />
               </FormField>
 
-              {/* Conditional Nomor Pelayan */}
+              {/* Conditional Nomor Pelayanan */}
               {watchServiceType !== ServiceType.PENGAKTIFAN && (
-                <FormField label="Nomor Pelayan" span={12} error={errors.nomorPelayan?.message}>
+                <FormField label="Nomor Pelayanan" span={12} error={errors.nomorPelayan?.message}>
                   <StyledInput
                     type="text"
-                    placeholder="Masukkan Nomor Pelayan"
+                    placeholder="Masukkan Nomor Pelayanan"
                     {...register('nomorPelayan')}
                     disabled={isPending}
                     error={errors.nomorPelayan?.message}
@@ -651,11 +699,201 @@ export function PermohonanForm({ initialData }: PermohonanFormProps) {
             </div>
           </StyledCard>
 
+          {/* Card 2b: Data Objek Pajak / Pemilik Baru (For OBJEK_PAJAK_BARU Only) */}
+          {watchServiceType === ServiceType.OBJEK_PAJAK_BARU && (
+            <StyledCard
+              title="Data Objek Pajak / Pemilik Baru"
+              icon={UserIcon}
+            >
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                {/* Owner Section */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '16px' }}>
+                  <FormField label="Nama Pemilik Baru" span={12} error={errors.details?.[0]?.newOwnerName?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Nama Lengkap Pemilik Baru"
+                      {...register('details.0.newOwnerName')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newOwnerName?.message}
+                      icon={UserInputIcon}
+                    />
+                  </FormField>
+
+                  <FormField label="Alamat Pemilik Baru" span={12} error={errors.details?.[0]?.newOwnerStreet?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Jalan / Dukuh"
+                      {...register('details.0.newOwnerStreet')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newOwnerStreet?.message}
+                      icon={MapPinInputIcon}
+                    />
+                  </FormField>
+
+                  <FormField label="Blok" span={6} error={errors.details?.[0]?.newOwnerBlock?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Blok"
+                      {...register('details.0.newOwnerBlock')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newOwnerBlock?.message}
+                    />
+                  </FormField>
+
+                  <div style={{ gridColumn: 'span 6', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <FormField label="RT" span={1} error={errors.details?.[0]?.newOwnerRt?.message}>
+                      <StyledInput
+                        type="text"
+                        placeholder="00"
+                        {...register('details.0.newOwnerRt')}
+                        disabled={isPending}
+                        error={errors.details?.[0]?.newOwnerRt?.message}
+                      />
+                    </FormField>
+                    <FormField label="RW" span={1} error={errors.details?.[0]?.newOwnerRw?.message}>
+                      <StyledInput
+                        type="text"
+                        placeholder="00"
+                        {...register('details.0.newOwnerRw')}
+                        disabled={isPending}
+                        error={errors.details?.[0]?.newOwnerRw?.message}
+                      />
+                    </FormField>
+                  </div>
+
+                  <FormField label="Kecamatan" span={6} error={errors.details?.[0]?.newOwnerDistrict?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Kecamatan"
+                      {...register('details.0.newOwnerDistrict')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newOwnerDistrict?.message}
+                    />
+                  </FormField>
+
+                  <FormField label="Kelurahan / Desa" span={6} error={errors.details?.[0]?.newOwnerVillage?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Kelurahan / Desa"
+                      {...register('details.0.newOwnerVillage')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newOwnerVillage?.message}
+                    />
+                  </FormField>
+                </div>
+
+                <hr style={{ border: 'none', borderTop: '1px solid #F3F4F6', margin: '4px 0' }} />
+
+                {/* Property Layout */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '16px' }}>
+                  <FormField label="Letak Objek Baru" span={12} error={errors.details?.[0]?.newPropertyStreet?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Jalan Letak Objek Baru"
+                      {...register('details.0.newPropertyStreet')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newPropertyStreet?.message}
+                      icon={MapPinInputIcon}
+                    />
+                  </FormField>
+
+                  <FormField label="Blok Objek Baru" span={6} error={errors.details?.[0]?.newPropertyBlock?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Blok"
+                      {...register('details.0.newPropertyBlock')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newPropertyBlock?.message}
+                    />
+                  </FormField>
+
+                  <div style={{ gridColumn: 'span 6', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                    <FormField label="RT Objek Baru" span={1} error={errors.details?.[0]?.newPropertyRt?.message}>
+                      <StyledInput
+                        type="text"
+                        placeholder="00"
+                        {...register('details.0.newPropertyRt')}
+                        disabled={isPending}
+                        error={errors.details?.[0]?.newPropertyRt?.message}
+                      />
+                    </FormField>
+                    <FormField label="RW Objek Baru" span={1} error={errors.details?.[0]?.newPropertyRw?.message}>
+                      <StyledInput
+                        type="text"
+                        placeholder="00"
+                        {...register('details.0.newPropertyRw')}
+                        disabled={isPending}
+                        error={errors.details?.[0]?.newPropertyRw?.message}
+                      />
+                    </FormField>
+                  </div>
+
+                  <FormField label="Kecamatan Objek Baru" span={6} error={errors.details?.[0]?.newPropertyDistrict?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Kecamatan"
+                      {...register('details.0.newPropertyDistrict')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newPropertyDistrict?.message}
+                    />
+                  </FormField>
+
+                  <FormField label="Kelurahan Objek Baru" span={6} error={errors.details?.[0]?.newPropertyVillage?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Kelurahan"
+                      {...register('details.0.newPropertyVillage')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newPropertyVillage?.message}
+                    />
+                  </FormField>
+                </div>
+
+                <hr style={{ border: 'none', borderTop: '1px solid #F3F4F6', margin: '4px 0' }} />
+
+                {/* Land/Building Sizes & Proof */}
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(12, 1fr)', gap: '16px' }}>
+                  <FormField label="Luas Tanah Baru (m²)" span={4} error={errors.details?.[0]?.newLandArea?.message}>
+                    <StyledInput
+                      type="number"
+                      step="any"
+                      {...register('details.0.newLandArea', { valueAsNumber: true })}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newLandArea?.message}
+                      icon={SizeInputIcon}
+                    />
+                  </FormField>
+
+                  <FormField label="Luas Bangunan Baru (m²)" span={4} error={errors.details?.[0]?.newBuildingArea?.message}>
+                    <StyledInput
+                      type="number"
+                      step="any"
+                      {...register('details.0.newBuildingArea', { valueAsNumber: true })}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.newBuildingArea?.message}
+                      icon={SizeInputIcon}
+                    />
+                  </FormField>
+
+                  <FormField label="Bukti Kepemilikan" span={4} error={errors.details?.[0]?.ownershipProof?.message}>
+                    <StyledInput
+                      type="text"
+                      placeholder="Cth: SHM No. 123"
+                      {...register('details.0.ownershipProof')}
+                      disabled={isPending}
+                      error={errors.details?.[0]?.ownershipProof?.message}
+                      icon={DocumentInputIcon}
+                    />
+                  </FormField>
+                </div>
+              </div>
+            </StyledCard>
+          )}
+
           {/* Card 2: Original Property Details */}
           {watchServiceType !== ServiceType.OBJEK_PAJAK_BARU && (
             <StyledCard
-              title="Data Objek Pajak / Pemilik Asal"
-              description="Masukkan rincian data pemilik lama dan luas objek saat ini"
+              title="Data Objek Pajak & Pemilik Lama"
               icon={UserIcon}
             >
               <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

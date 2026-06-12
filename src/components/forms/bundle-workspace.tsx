@@ -139,7 +139,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
         <Card className="border-[#DDDDDD] shadow-sm md:col-span-2">
           <CardHeader className="pb-3 border-b border-[#F7F7F7]">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-[#222222]">
-              <Package className="h-5 w-5 text-[#FF385C]" />
+              <Package className="h-5 w-5 text-[#2563EB]" />
               Informasi Bundle
             </CardTitle>
           </CardHeader>
@@ -154,11 +154,11 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
             </div>
             <div>
               <p className="text-xs text-[#717171] font-semibold">Jumlah Berkas</p>
-              <p className="font-bold text-[#FF385C] mt-0.5">{bundle.itemCount} / 20 Berkas</p>
+              <p className="font-bold text-[#2563EB] mt-0.5">{bundle.itemCount} / 20 Berkas</p>
             </div>
             <div>
               <p className="text-xs text-[#717171] font-semibold flex items-center gap-1">
-                <Calendar className="h-3.5 w-3.5 text-[#FF385C]" /> Dibuat Pada
+                <Calendar className="h-3.5 w-3.5 text-[#2563EB]" /> Dibuat Pada
               </p>
               <p className="font-semibold text-[#222222] mt-0.5">
                 {new Date(bundle.createdAt).toLocaleDateString('id-ID', {
@@ -170,7 +170,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
             </div>
             <div>
               <p className="text-xs text-[#717171] font-semibold flex items-center gap-1">
-                <ShieldCheck className="h-3.5 w-3.5 text-[#FF385C]" /> Status Bundle
+                <ShieldCheck className="h-3.5 w-3.5 text-[#2563EB]" /> Status Bundle
               </p>
               <span className="inline-block text-[10px] font-bold px-2 py-0.5 rounded-full border border-blue-200 bg-blue-50 text-blue-700 uppercase mt-0.5 tracking-wider">
                 {bundle.status.replace(/_/g, ' ')}
@@ -189,7 +189,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
               <Button
                 onClick={handleFinalize}
                 disabled={isPending}
-                className="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white font-semibold rounded-lg h-11 shadow-sm flex items-center justify-center gap-1.5"
+                className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg h-11 shadow-sm flex items-center justify-center gap-1.5 cursor-pointer"
               >
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-5 w-5" />}
                 Finalisasi Bundle
@@ -233,7 +233,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
         <Card className="border-[#DDDDDD] shadow-sm">
           <CardHeader className="pb-3 border-b border-[#F7F7F7]">
             <CardTitle className="text-sm font-bold flex items-center gap-1.5">
-              <Plus className="h-4 w-4 text-[#FF385C]" /> Tambah Berkas ke Bundle
+              <Plus className="h-4 w-4 text-[#2563EB]" /> Tambah Berkas ke Bundle
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 flex flex-col sm:flex-row gap-3 items-end">
@@ -268,7 +268,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
       <div className="hidden md:block bg-white border border-[#DDDDDD] rounded-xl shadow-sm overflow-hidden">
         <div className="px-6 py-4 border-b border-[#DDDDDD] bg-[#F7F7F7]">
           <h2 className="text-sm font-bold text-[#222222] flex items-center gap-1.5">
-            <FileText className="h-4 w-4 text-[#FF385C]" /> Daftar Berkas dalam Bundle
+            <FileText className="h-4 w-4 text-[#2563EB]" /> Daftar Berkas dalam Bundle
           </h2>
         </div>
         <Table>
@@ -293,7 +293,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
               bundle.items.map((item) => (
                 <TableRow key={item.id} className="border-b border-[#DDDDDD] hover:bg-transparent">
                   <TableCell className="font-bold text-[#222222]">
-                    <Link href={`/permohonan/${item.id}`} className="hover:underline text-[#FF385C]">
+                    <Link href={`/permohonan/${item.id}`} className="hover:underline text-[#2563EB]">
                       {item.nomorBerkas}
                     </Link>
                   </TableCell>
@@ -331,7 +331,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
       <div className="md:hidden space-y-4">
         <div className="bg-[#F7F7F7] border border-[#DDDDDD] rounded-xl px-6 py-4 shadow-sm flex items-center justify-between">
           <h2 className="text-sm font-bold text-[#222222] flex items-center gap-1.5">
-            <FileText className="h-4 w-4 text-[#FF385C]" /> Daftar Berkas dalam Bundle
+            <FileText className="h-4 w-4 text-[#2563EB]" /> Daftar Berkas dalam Bundle
           </h2>
         </div>
         {bundle.items.length === 0 ? (
@@ -346,7 +346,7 @@ export function BundleWorkspace({ bundle, availableItems, userRole }: BundleWork
             >
               <div className="flex items-start justify-between gap-2">
                 <div>
-                  <p className="font-bold text-[#FF385C] text-sm">
+                  <p className="font-bold text-[#2563EB] text-sm">
                     <Link href={`/permohonan/${item.id}`} className="hover:underline">
                       {item.nomorBerkas}
                     </Link>

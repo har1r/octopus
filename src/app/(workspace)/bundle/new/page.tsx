@@ -111,7 +111,7 @@ export default async function NewBundlePage({ searchParams }: PageProps) {
       <div className="bg-white border border-[#DDDDDD] rounded-xl shadow-sm overflow-hidden overflow-x-auto">
         <div className="px-6 py-4 border-b border-[#DDDDDD] bg-[#F7F7F7]">
           <h2 className="text-sm font-bold text-[#222222] flex items-center gap-1.5">
-            <FileText className="h-4 w-4 text-[#FF385C]" /> Daftar Berkas Masuk Bundle
+            <FileText className="h-4 w-4 text-[#2563EB]" /> Daftar Berkas Masuk Bundle
           </h2>
         </div>
         <Table>

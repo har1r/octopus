@@ -110,7 +110,7 @@ export default async function BundleHistoryPage({ searchParams }: PageProps) {
                   <TableCell className="font-semibold text-xs text-[#222222]">
                     {item.serviceType.replace(/_/g, ' ')}
                   </TableCell>
-                  <TableCell className="font-bold text-[#FF385C]">
+                  <TableCell className="font-bold text-[#2563EB]">
                     {item.itemCount} Berkas
                   </TableCell>
                   <TableCell>
@@ -130,7 +130,7 @@ export default async function BundleHistoryPage({ searchParams }: PageProps) {
                       href={`/bundle/${item.id}`}
                       className={cn(
                         buttonVariants({ variant: 'ghost' }),
-                        "text-[#FF385C] hover:text-[#E31C5F] hover:bg-[#FF385C]/5 rounded-lg p-2 h-9 w-9 flex items-center justify-center"
+                        "text-[#2563EB] hover:text-[#1D4ED8] hover:bg-[#2563EB]/5 rounded-lg p-2 h-9 w-9 flex items-center justify-center cursor-pointer"
                       )}
                       title="Buka Workspace"
                     >

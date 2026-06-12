@@ -179,33 +179,77 @@ export function AppSidebar({ userRole, userName, collapsed, onToggle, onMobileCl
     UserRole.SUPERVISOR,
   ];
 
-  // Menu items mapping
-  const primaryNavItems: MenuItem[] = [
-    { name: 'Home', href: '/dashboard', icon: HomeIcon, allowedRoles: ALL_ROLES },
-    { name: 'Find leads', href: '/permohonan', icon: FindLeadsIcon, allowedRoles: ALL_ROLES },
-  ];
+  // Dynamically configure menu items based on role
+  const getNavItems = (): { primary: MenuItem[]; secondary: MenuItem[]; bottom: MenuItem[] } => {
+    switch (userRole) {
+      case UserRole.STAF_PENGINPUT:
+        return {
+          primary: [
+            { name: 'Daftar Permohonan', href: '/dashboard', icon: HomeIcon, allowedRoles: [UserRole.STAF_PENGINPUT] },
+            { name: 'Buat Permohonan', href: '/permohonan/new', icon: FindLeadsIcon, allowedRoles: [UserRole.STAF_PENGINPUT] },
+          ],
+          secondary: [],
+          bottom: [],
+        };
+      case UserRole.STAF_PENELITI:
+        return {
+          primary: [
+            { name: 'Dashboard Peneliti', href: '/dashboard', icon: HomeIcon, allowedRoles: [UserRole.STAF_PENELITI] },
+            { name: 'Antrean Masuk', href: '/permohonan', icon: SignalsIcon, allowedRoles: [UserRole.STAF_PENELITI] },
+            { name: 'Workspace Bundling', href: '/bundle', icon: CampaignsIcon, allowedRoles: [UserRole.STAF_PENELITI] },
+          ],
+          secondary: [],
+          bottom: [],
+        };
+      case UserRole.STAF_PENGARSIP:
+        return {
+          primary: [
+            { name: 'Dashboard Arsip', href: '/dashboard', icon: HomeIcon, allowedRoles: [UserRole.STAF_PENGARSIP] },
+            { name: 'Workspace Arsip', href: '/arsip', icon: ExportsIcon, allowedRoles: [UserRole.STAF_PENGARSIP] },
+          ],
+          secondary: [],
+          bottom: [],
+        };
+      case UserRole.STAF_PENGIRIM:
+        return {
+          primary: [
+            { name: 'Dashboard Pengiriman', href: '/dashboard', icon: HomeIcon, allowedRoles: [UserRole.STAF_PENGIRIM] },
+            { name: 'Workspace Pengiriman', href: '/manifest', icon: AdsIcon, allowedRoles: [UserRole.STAF_PENGIRIM] },
+          ],
+          secondary: [],
+          bottom: [],
+        };
+      case UserRole.STAF_PEMANTAU:
+        return {
+          primary: [
+            { name: 'Dashboard Pemantau', href: '/dashboard', icon: HomeIcon, allowedRoles: [UserRole.STAF_PEMANTAU] },
+            { name: 'Pemantauan Berkas', href: '/monitoring', icon: FunctionsIcon, allowedRoles: [UserRole.STAF_PEMANTAU] },
+          ],
+          secondary: [],
+          bottom: [],
+        };
+      case UserRole.SUPERVISOR:
+        return {
+          primary: [
+            { name: 'Dashboard Analytics', href: '/dashboard', icon: HomeIcon, allowedRoles: [UserRole.SUPERVISOR] },
+            { name: 'Statistik & SLA', href: '/analytics', icon: McpIcon, allowedRoles: [UserRole.SUPERVISOR] },
+            { name: 'Log Audit Keamanan', href: '/audit', icon: TrashIcon, allowedRoles: [UserRole.SUPERVISOR] },
+          ],
+          secondary: [],
+          bottom: [],
+        };
+      default:
+        return {
+          primary: [
+            { name: 'Home', href: '/dashboard', icon: HomeIcon, allowedRoles: ALL_ROLES },
+          ],
+          secondary: [],
+          bottom: [],
+        };
+    }
+  };
 
-  const orchestrationNavItems: MenuItem[] = [
-    {
-      name: 'Signals',
-      href: userRole === 'STAF_PENELITI' ? '/permohonan/queue' : userRole === 'STAF_PENGINPUT' ? '/permohonan/revisi' : '/permohonan',
-      icon: SignalsIcon,
-      allowedRoles: ALL_ROLES,
-    },
-    { name: 'Ads', href: '/manifest', icon: AdsIcon, allowedRoles: ALL_ROLES, badge: UpgradeBadge },
-    { name: 'Campaigns', href: '/bundle', icon: CampaignsIcon, allowedRoles: ALL_ROLES },
-    { name: 'Claygents', href: '/ai', icon: ClaygentsIcon, allowedRoles: ALL_ROLES },
-    { name: 'Functions', href: '/monitoring', icon: FunctionsIcon, allowedRoles: ALL_ROLES },
-    { name: 'MCP', href: '/analytics', icon: McpIcon, allowedRoles: ALL_ROLES, badge: BetaBadge },
-  ];
-
-  const bottomNavItems: MenuItem[] = [
-    { name: 'Exports', href: '/arsip', icon: ExportsIcon, allowedRoles: ALL_ROLES },
-    { name: 'Trash', href: '/audit', icon: TrashIcon, allowedRoles: ALL_ROLES },
-    { name: 'Settings', href: '/audit', icon: SettingsIcon, allowedRoles: ALL_ROLES },
-    { name: 'AI context', href: '/ai', icon: AiContextIcon, allowedRoles: ALL_ROLES },
-    { name: 'Resources', href: '/permohonan', icon: ResourcesIcon, allowedRoles: ALL_ROLES },
-  ];
+  const { primary: primaryNavItems, secondary: orchestrationNavItems, bottom: bottomNavItems } = getNavItems();
 
   const renderLinkItem = (item: MenuItem) => {
     const isActive = pathname === item.href || (item.href !== '/dashboard' && pathname.startsWith(item.href + '/'));

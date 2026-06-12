@@ -33,7 +33,7 @@ export function CreateManifestButton() {
     <Button
       onClick={handleCreate}
       disabled={isPending}
-      className="bg-gradient-to-r from-[#FF385C] to-[#E31C5F] hover:from-[#E31C5F] hover:to-[#C1113C] text-white font-bold rounded-xl h-11 px-5 shadow-md shadow-[#FF385C]/15 flex items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.97] cursor-pointer"
+      className="bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-white font-bold rounded-xl h-11 px-5 shadow-md shadow-[#2563EB]/15 flex items-center justify-center gap-1.5 transition-all duration-150 active:scale-[0.97] cursor-pointer"
     >
       {isPending ? (
         <>

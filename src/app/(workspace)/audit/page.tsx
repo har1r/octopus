@@ -85,7 +85,7 @@ export default async function AuditLogPage({ searchParams }: PageProps) {
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-bold text-[#222222] flex items-center gap-2">
-            <FolderLock className="h-6 w-6 text-[#FF385C]" /> Log Audit Keamanan
+            <FolderLock className="h-6 w-6 text-[#2563EB]" /> Log Audit Keamanan
           </h1>
           <p className="text-xs text-[#717171] mt-1">
             Catatan aktivitas sistem yang bersifat kekal (immutable), transparan, dan dapat diaudit kapan saja.
@@ -100,8 +100,8 @@ export default async function AuditLogPage({ searchParams }: PageProps) {
       {/* Stat Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
         <div className="bg-white border border-[#DDDDDD] rounded-xl p-5 shadow-sm flex items-center gap-4">
-          <div className="h-11 w-11 rounded-xl bg-[#FF385C]/10 flex items-center justify-center flex-shrink-0">
-            <Activity className="h-5 w-5 text-[#FF385C]" />
+          <div className="h-11 w-11 rounded-xl bg-[#2563EB]/10 flex items-center justify-center flex-shrink-0">
+            <Activity className="h-5 w-5 text-[#2563EB]" />
           </div>
           <div>
             <p className="text-xs text-[#717171] font-semibold uppercase tracking-wider">Total Log</p>

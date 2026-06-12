@@ -9,7 +9,7 @@ export function ArchitaxLogo({ size = 40, className, ...props }: LogoProps) {
   return (
     <div className="relative flex items-center justify-center select-none active:scale-95 transition-transform duration-200">
       {/* Dynamic ambient backdrop glow */}
-      <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-[#FF385C]/30 to-[#FFB300]/20 blur-xl opacity-70 animate-pulse pointer-events-none" />
+      <div className="absolute -inset-2 rounded-full bg-gradient-to-tr from-[#2563EB]/30 to-[#06B6D4]/20 blur-xl opacity-70 animate-pulse pointer-events-none" />
       
       <svg
         width={size}
@@ -22,14 +22,14 @@ export function ArchitaxLogo({ size = 40, className, ...props }: LogoProps) {
       >
         <defs>
           {/* Gradients */}
-          <linearGradient id="coral-deep" x1="0" y1="0" x2="100" y2="100">
-            <stop offset="0%" stopColor="#C1113C" />
-            <stop offset="100%" stopColor="#9C0A2E" />
+          <linearGradient id="blue-deep" x1="0" y1="0" x2="100" y2="100">
+            <stop offset="0%" stopColor="#1E40AF" />
+            <stop offset="100%" stopColor="#1E3A8A" />
           </linearGradient>
           
-          <linearGradient id="coral-vibrant" x1="0" y1="0" x2="100" y2="100">
-            <stop offset="0%" stopColor="#FF5A79" />
-            <stop offset="100%" stopColor="#FF385C" />
+          <linearGradient id="blue-vibrant" x1="0" y1="0" x2="100" y2="100">
+            <stop offset="0%" stopColor="#3B82F6" />
+            <stop offset="100%" stopColor="#2563EB" />
           </linearGradient>
 
           <linearGradient id="gold-bright" x1="0" y1="0" x2="100" y2="100">
@@ -44,14 +44,14 @@ export function ArchitaxLogo({ size = 40, className, ...props }: LogoProps) {
           
           {/* Drop Shadows */}
           <filter id="drop-shadow-3d" x="-20%" y="-20%" width="140%" height="140%" filterUnits="userSpaceOnUse">
-            <feDropShadow dx="0" dy="6" stdDeviation="4" floodColor="#9C0A2E" floodOpacity="0.35" />
+            <feDropShadow dx="0" dy="6" stdDeviation="4" floodColor="#1E3A8A" floodOpacity="0.35" />
           </filter>
         </defs>
 
         {/* Background Grid Hexagon (Representing property boundary grid) */}
         <polygon
           points="50,5 89,27 89,73 50,95 11,73 11,27"
-          stroke="url(#coral-vibrant)"
+          stroke="url(#blue-vibrant)"
           strokeWidth="1.5"
           strokeDasharray="4 2"
           className="opacity-30"
@@ -62,14 +62,14 @@ export function ArchitaxLogo({ size = 40, className, ...props }: LogoProps) {
         {/* Left Side (Dark/Shadowed) */}
         <path
           d="M50 90 L15 70 L15 30 L50 50 Z"
-          fill="url(#coral-deep)"
+          fill="url(#blue-deep)"
           filter="url(#drop-shadow-3d)"
         />
 
         {/* Right Side (Vibrant/Lit) */}
         <path
           d="M50 90 L85 70 L85 30 L50 50 Z"
-          fill="url(#coral-vibrant)"
+          fill="url(#blue-vibrant)"
         />
 
         {/* Top Side (Gold/Warm Highlight representing valuation/tax growth) */}

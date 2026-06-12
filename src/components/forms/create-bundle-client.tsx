@@ -51,7 +51,7 @@ export function CreateBundleClient({ ids, itemsCount, hasErrors }: CreateBundleC
       <Button
         onClick={handleCreate}
         disabled={isPending || hasErrors}
-        className="bg-[#FF385C] hover:bg-[#E31C5F] text-white h-11 px-8 rounded-lg font-semibold shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2"
+        className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white h-11 px-8 rounded-lg font-semibold shadow-md active:scale-[0.98] transition-all flex items-center justify-center gap-2 cursor-pointer"
       >
         {isPending ? (
           <>

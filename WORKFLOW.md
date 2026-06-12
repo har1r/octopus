@@ -26,7 +26,7 @@ Sistem Architax mengelola siklus hidup data permohonan melalui status-status ber
 ## 2. DETAIL ALUR PER TAHAPAN (STAGE-BY-STAGE BREAKDOWN)
 
 ### TAHAP 1: INPUT STAGE (PENGINPUTAN)
-* **Aktor:** `STAF_PENGINPUT` / Pemohon Publik
+* **Aktor:** `STAF_PENGINPUT`
 * **Kondisi Awal:** Form Kosong / Data Baru
 * **Aksi Utama:** `Kirim Permohonan`
 * **Validasi Sistem:**
@@ -73,7 +73,7 @@ Sistem Architax mengelola siklus hidup data permohonan melalui status-status ber
     * Berkas yang keluar kini dapat diubah statusnya menjadi **`REVISION`** atau **`REJECTED`**.
 
 ### Aturan Batas Waktu Otomatis (SLA Automation)
-* Setiap berkas berstatus **`REVISION`** diberikan batas waktu perbaikan oleh pemohon selama tahun kalender berjalan.
+* Setiap berkas berstatus **`REVISION`** diberikan batas waktu perbaikan oleh STAF_PENGINPUT selama tahun kalender berjalan.
 * **Pemicu Otomatis (Cron Job):** Pada tanggal 31 Desember pukul 23:59:59, seluruh berkas yang masih berstatus **`REVISION`** dan belum di-*resubmit* akan diubah otomatis oleh sistem menjadi **`REJECTED_PERMANENT`**.
 
 ---

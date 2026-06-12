@@ -93,7 +93,7 @@ export default async function ArchivingLandingPage({ searchParams }: PageProps) 
                     {item.serviceType.replace(/_/g, ' ')}
                   </TableCell>
                   <TableCell>
-                    <span className="text-xs font-extrabold text-[#FF385C] bg-[#FF385C]/5 px-2.5 py-1 rounded-full border border-[#FF385C]/10 select-none">
+                    <span className="text-xs font-extrabold text-[#2563EB] bg-[#2563EB]/5 px-2.5 py-1 rounded-full border border-[#2563EB]/10 select-none">
                       {item.itemCount} Berkas
                     </span>
                   </TableCell>
@@ -113,7 +113,7 @@ export default async function ArchivingLandingPage({ searchParams }: PageProps) 
                   <TableCell className="text-right">
                     <Link
                       href={`/arsip/${item.id}`}
-                      className="bg-gradient-to-r from-[#FF385C] to-[#E31C5F] hover:from-[#E31C5F] hover:to-[#C1113C] text-white text-xs font-bold rounded-xl h-9 px-4 shadow-md shadow-[#FF385C]/10 active:scale-[0.97] transition-all duration-150 cursor-pointer inline-flex items-center gap-1"
+                      className="bg-gradient-to-r from-[#2563EB] to-[#1D4ED8] hover:from-[#1D4ED8] hover:to-[#1E40AF] text-white text-xs font-bold rounded-xl h-9 px-4 shadow-md shadow-[#2563EB]/10 active:scale-[0.97] transition-all duration-150 cursor-pointer inline-flex items-center gap-1"
                     >
                       Mulai Arsip <ArrowRight className="h-4 w-4" />
                     </Link>

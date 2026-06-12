@@ -96,6 +96,7 @@ model Permohonan {
 
   applicantPhone          String?
   bundleId                String? @db.ObjectId
+  revisionNote            String?
 
   details                 DetailPermohonan[]
   scanFiles               ScanFile[]

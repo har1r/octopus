@@ -68,7 +68,8 @@ export class NotificationService {
   static async notifyPermohonanStatus(
     nomorBerkas: string,
     status: ApplicationStatus,
-    applicantPhone: string | null
+    applicantPhone: string | null,
+    revisionNote?: string
   ): Promise<{ success: boolean; error?: string }> {
     if (!applicantPhone) {
       return { success: false, error: 'Nomor HP pemohon tidak tersedia.' };
@@ -77,7 +78,7 @@ export class NotificationService {
     let message = '';
     switch (status) {
       case ApplicationStatus.REVISION:
-        message = `Pemberitahuan Architax PBB:\n\nBerkas permohonan Anda dengan No. *${nomorBerkas}* memerlukan REVISI.\nSilakan masuk ke aplikasi atau hubungi petugas untuk merevisi dokumen Anda agar proses dapat dilanjutkan.\n\nTerima kasih.`;
+        message = `Pemberitahuan Architax PBB:\n\nBerkas permohonan Anda dengan No. *${nomorBerkas}* memerlukan REVISI.\n\n*Catatan Perbaikan dari Peneliti*:\n"${revisionNote || '-'}"\n\n*Peringatan Tenggat Waktu (SLA)*:\nMohon lakukan perbaikan berkas sebelum akhir tahun kalender berjalan. Berkas yang tidak direvisi hingga 31 Desember pukul 23:59:59 akan DITOLAK PERMANEN secara otomatis.\n\nSilakan masuk ke aplikasi atau hubungi petugas untuk merevisi dokumen Anda agar proses dapat dilanjutkan.\n\nTerima kasih.`;
         break;
       case ApplicationStatus.REJECTED:
         message = `Pemberitahuan Architax PBB:\n\nBerkas permohonan Anda dengan No. *${nomorBerkas}* telah DITOLAK.\nSilakan periksa kembali persyaratan dokumen Anda dan ajukan ulang berkas baru.\n\nTerima kasih.`;

@@ -120,13 +120,13 @@ export default async function MonitoringLandingPage({ searchParams }: PageProps)
               href={href}
               className={`px-4 py-3 text-sm font-semibold border-b-2 transition-all whitespace-nowrap ${
                 isActive
-                  ? 'border-[#FF385C] text-[#FF385C]'
+                  ? 'border-[#2563EB] text-[#2563EB]'
                   : 'border-transparent text-[#717171] hover:text-[#222222] hover:border-[#DDDDDD]'
               }`}
             >
               {tab.label}
               <span className={`ml-2 text-[10px] font-bold px-1.5 py-0.5 rounded-full ${
-                isActive ? 'bg-[#FF385C]/10 text-[#FF385C]' : 'bg-[#F0F0F0] text-[#717171]'
+                isActive ? 'bg-[#2563EB]/10 text-[#2563EB]' : 'bg-[#F0F0F0] text-[#717171]'
               }`}>
                 {tab.count}
               </span>
@@ -167,7 +167,7 @@ export default async function MonitoringLandingPage({ searchParams }: PageProps)
                   <TableCell className="font-semibold text-xs text-[#222222]">
                     {item.serviceType.replace(/_/g, ' ')}
                   </TableCell>
-                  <TableCell className="text-center font-bold text-[#FF385C]">
+                  <TableCell className="text-center font-bold text-[#2563EB]">
                     {item.itemCount} Berkas
                   </TableCell>
                   <TableCell>
@@ -191,10 +191,10 @@ export default async function MonitoringLandingPage({ searchParams }: PageProps)
                   <TableCell className="text-right">
                     <Link
                       href={`/monitoring/${item.id}`}
-                      className={`inline-flex items-center justify-center gap-1.5 text-xs font-bold rounded-lg h-9 px-4 border transition-colors ${
+                      className={`inline-flex items-center justify-center gap-1.5 text-xs font-bold rounded-lg h-9 px-4 border transition-colors cursor-pointer ${
                         item.status === BundleStatus.COMPLETED
                           ? 'border-[#DDDDDD] hover:bg-[#F7F7F7] text-[#222222]'
-                          : 'bg-[#FF385C] border-transparent hover:bg-[#E31C5F] text-white'
+                          : 'bg-[#2563EB] border-transparent hover:bg-[#1D4ED8] text-white'
                       }`}
                     >
                       {item.status === BundleStatus.COMPLETED ? (
@@ -241,7 +241,7 @@ export default async function MonitoringLandingPage({ searchParams }: PageProps)
               </div>
               <div className="flex items-center justify-between border-t border-[#F7F7F7] pt-3">
                 <div className="flex items-center gap-3 text-xs text-[#717171]">
-                  <span className="font-bold text-[#FF385C]">{item.itemCount} Berkas</span>
+                  <span className="font-bold text-[#2563EB]">{item.itemCount} Berkas</span>
                   <span>
                     {new Date(item.updatedAt).toLocaleDateString('id-ID', {
                       day: 'numeric',
@@ -252,10 +252,10 @@ export default async function MonitoringLandingPage({ searchParams }: PageProps)
                 </div>
                 <Link
                   href={`/monitoring/${item.id}`}
-                  className={`inline-flex items-center justify-center gap-1.5 text-xs font-bold rounded-lg h-8 px-3 border transition-colors ${
+                  className={`inline-flex items-center justify-center gap-1.5 text-xs font-bold rounded-lg h-8 px-3 border transition-colors cursor-pointer ${
                     item.status === BundleStatus.COMPLETED
                       ? 'border-[#DDDDDD] hover:bg-[#F7F7F7] text-[#222222]'
-                      : 'bg-[#FF385C] border-transparent hover:bg-[#E31C5F] text-white'
+                      : 'bg-[#2563EB] border-transparent hover:bg-[#1D4ED8] text-white'
                   }`}
                 >
                   {item.status === BundleStatus.COMPLETED ? (

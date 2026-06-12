@@ -5,8 +5,32 @@ import { PermohonanService } from '@/services/permohonan.service';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import Link from 'next/link';
-import { ArrowLeft, Edit3, FileText, Home, Layers, Phone, ShieldCheck, User } from 'lucide-react';
+import { ArrowLeft, Edit3, FileText, Home, Layers, Phone, ShieldCheck, User, Check, ClipboardList, Archive, Truck, CheckCircle2, AlertTriangle, Activity } from 'lucide-react';
 import { ApplicationStatus } from '@prisma/client';
+
+function getStepIndex(status: ApplicationStatus): number {
+  switch (status) {
+    case 'REVISION':
+    case 'SUBMITTED':
+      return 1;
+    case 'DRAFT_BUNDLE':
+      return 2;
+    case 'READY_TO_ARCHIVE':
+      return 3;
+    case 'READY_TO_SHIP':
+    case 'SENT_TO_CENTER':
+      return 4;
+    case 'COMPLETED':
+      return 5;
+    case 'RE_EXAMINE':
+      return 2;
+    case 'REJECTED':
+    case 'REJECTED_PERMANENT':
+      return -1;
+    default:
+      return 1;
+  }
+}
 
 export const metadata = {
   title: 'Detail Permohonan - Architax PBB',
@@ -69,8 +93,17 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
     session.user.role === 'STAF_PENGINPUT' &&
     (permohonan.status === ApplicationStatus.SUBMITTED || permohonan.status === ApplicationStatus.REVISION);
 
+  const stepIndex = getStepIndex(permohonan.status);
+  const steps = [
+    { label: 'Pendaftaran', desc: 'Draf & Input Berkas', icon: ClipboardList },
+    { label: 'Penelitian', desc: 'Verifikasi & Bundling', icon: Layers },
+    { label: 'Arsip Scan', desc: 'Unggah Scan Berkas', icon: Archive },
+    { label: 'Pengiriman', desc: 'Kirim ke Pusat', icon: Truck },
+    { label: 'Selesai', desc: 'Permohonan Terbit', icon: CheckCircle2 },
+  ];
+
   return (
-    <div className="space-y-6 max-w-4xl pb-12 font-sans">
+    <div className="space-y-6 w-full pb-12 font-sans">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div className="flex items-center gap-3">
@@ -81,7 +114,7 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
             <ArrowLeft className="h-4 w-4" />
           </Link>
           <div>
-            <h1 className="text-2xl font-bold text-[#222222]">
+            <h1 className="text-xl font-bold text-[#222222]">
               Berkas {permohonan.nomorBerkas}
             </h1>
             <p className="text-xs text-[#717171]">
@@ -97,13 +130,10 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <span className={`inline-flex items-center text-xs font-bold px-3 py-1.5 rounded-full border uppercase tracking-wider ${getStatusBadgeClass(permohonan.status)}`}>
-            {permohonan.status.replace(/_/g, ' ')}
-          </span>
           {isEditable && (
             <Link
               href={`/permohonan/${permohonan.id}/edit`}
-              className="bg-[#FF385C] hover:bg-[#E31C5F] text-white font-semibold rounded-lg h-10 px-4 shadow-sm flex items-center gap-1.5 text-sm transition-colors"
+              className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg h-10 px-4 shadow-sm flex items-center gap-1.5 text-sm transition-colors"
             >
               <Edit3 className="h-4 w-4" /> Edit Berkas
             </Link>
@@ -111,39 +141,102 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
         </div>
       </div>
 
+      {/* Visual Progress Stepper */}
+      <Card className="border-[#DDDDDD] shadow-sm">
+        <CardHeader className="pb-3 border-b border-[#F7F7F7]">
+          <CardTitle className="text-sm font-bold flex items-center gap-2 text-[#222222]">
+            <Activity className="h-4 w-4 text-[#2563EB]" />
+            Progres Permohonan
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="pt-6">
+          {stepIndex === -1 ? (
+            <div className="bg-rose-50 border border-rose-200 rounded-lg p-4 text-rose-700 flex items-center gap-3">
+              <AlertTriangle className="h-5 w-5 text-rose-500 animate-bounce" />
+              <div>
+                <p className="text-sm font-bold">Berkas Ditolak (Rejected)</p>
+                <p className="text-xs">Berkas permohonan ini ditolak secara permanen oleh Peneliti.</p>
+              </div>
+            </div>
+          ) : (
+            <div className="relative flex items-center justify-between w-full mt-2 mb-1">
+              {/* Connection Line Container */}
+              <div className="absolute left-[10%] right-[10%] top-1/4 -translate-y-1/2 h-0.5 bg-[#F3F4F6] z-0">
+                {/* Active Colored Line */}
+                <div
+                  className="h-full bg-[#2563EB] transition-all duration-500 ease-in-out"
+                  style={{ width: `${((stepIndex - 1) / (steps.length - 1)) * 100}%` }}
+                />
+              </div>
+
+              {/* Step Nodes */}
+              {steps.map((step, idx) => {
+                const currentStep = idx + 1;
+                const isCompleted = currentStep < stepIndex;
+                const isActive = currentStep === stepIndex;
+                const StepIcon = step.icon;
+
+                return (
+                  <div key={idx} className="relative z-10 flex flex-col items-center flex-1">
+                    {/* Circle Node */}
+                    <div
+                      className={`h-8 w-8 rounded-full flex items-center justify-center border transition-all duration-300 ${isCompleted
+                        ? 'bg-[#2563EB] border-[#2563EB] text-white shadow-xs scale-100'
+                        : isActive
+                          ? 'bg-white border-[#2563EB] text-[#2563EB] ring-4 ring-blue-50/50 scale-105 shadow-sm'
+                          : 'bg-white border-[#E5E7EB] text-[#9CA3AF]'
+                        }`}
+                    >
+                      {isCompleted ? (
+                        <Check className="h-4 w-4 stroke-[3]" />
+                      ) : (
+                        <StepIcon className="h-4 w-4" />
+                      )}
+                    </div>
+
+                    {/* Step Titles */}
+                    <span className={`text-[10px] font-semibold mt-2 transition-colors ${isActive ? 'text-[#2563EB]' : isCompleted ? 'text-[#374151]' : 'text-[#9CA3AF]'
+                      }`}>
+                      {step.label}
+                    </span>
+                    <span className="text-[9px] text-[#9CA3AF] mt-0.5 hidden sm:block text-center font-normal">
+                      {step.desc}
+                    </span>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
       {/* Grid Summary */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Core Info */}
         <Card className="border-[#DDDDDD] shadow-sm md:col-span-2">
           <CardHeader className="pb-3 border-b border-[#F7F7F7]">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-[#222222]">
-              <Layers className="h-4 w-4 text-[#FF385C]" />
+              <Layers className="h-4 w-4 text-[#2563EB]" />
               Detail Informasi Layanan
             </CardTitle>
           </CardHeader>
-          <CardContent className="pt-4 grid grid-cols-2 gap-4 text-sm">
+          <CardContent className="pt-4 grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-4 text-sm">
             <div>
               <p className="text-xs text-[#717171] font-semibold">Jenis Pelayanan</p>
-              <p className="font-bold text-[#222222] mt-0.5">{permohonan.serviceType.replace(/_/g, ' ')}</p>
+              <p className="font-semibold text-[#222222] mt-1">{permohonan.serviceType.replace(/_/g, ' ')}</p>
             </div>
             <div>
               <p className="text-xs text-[#717171] font-semibold">Nomor Objek Pajak (NOP)</p>
-              <p className="font-mono font-bold text-[#222222] mt-0.5">{formatNop(permohonan.nop)}</p>
+              <p className="font-mono font-semibold text-[#222222] mt-1">{formatNop(permohonan.nop)}</p>
             </div>
-            {permohonan.nomorPelayan && (
-              <div>
-                <p className="text-xs text-[#717171] font-semibold">Nomor Pelayan</p>
-                <p className="font-bold text-[#222222] mt-0.5">{permohonan.nomorPelayan}</p>
-              </div>
-            )}
-            {permohonan.applicantPhone && (
-              <div>
-                <p className="text-xs text-[#717171] font-semibold flex items-center gap-1">
-                  <Phone className="h-3 w-3 text-[#FF385C]" /> HP Pemohon
-                </p>
-                <p className="font-semibold text-[#222222] mt-0.5">{permohonan.applicantPhone}</p>
-              </div>
-            )}
+            <div>
+              <p className="text-xs text-[#717171] font-semibold">Nomor Pelayanan</p>
+              <p className="font-semibold text-[#222222] mt-1">{permohonan.nomorPelayan || '-'}</p>
+            </div>
+            <div>
+              <p className="text-xs text-[#717171] font-semibold">No. HP Pemohon</p>
+              <p className="font-semibold text-[#222222] mt-1">{permohonan.applicantPhone || '-'}</p>
+            </div>
           </CardContent>
         </Card>
 
@@ -151,14 +244,14 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
         <Card className="border-[#DDDDDD] shadow-sm">
           <CardHeader className="pb-3 border-b border-[#F7F7F7]">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-[#222222]">
-              <ShieldCheck className="h-4 w-4 text-[#FF385C]" />
+              <ShieldCheck className="h-4 w-4 text-[#2563EB]" />
               Keterlacakan Berkas
             </CardTitle>
           </CardHeader>
           <CardContent className="pt-4 text-sm space-y-3">
             <div>
               <p className="text-xs text-[#717171] font-semibold">Status Alur Kerja</p>
-              <p className="font-bold text-xs uppercase tracking-wider text-[#FF385C] mt-0.5">
+              <p className="font-bold text-xs uppercase tracking-wider text-[#2563EB] mt-0.5">
                 {permohonan.status.replace(/_/g, ' ')}
               </p>
             </div>
@@ -179,7 +272,7 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
         <Card className="border-[#DDDDDD] shadow-sm">
           <CardHeader className="pb-3 border-b border-[#F7F7F7]">
             <CardTitle className="text-sm font-bold flex items-center gap-2 text-[#222222]">
-              <User className="h-4 w-4 text-[#FF385C]" />
+              <User className="h-4 w-4 text-[#2563EB]" />
               Rincian Objek Pajak & Pemilik Asal
             </CardTitle>
           </CardHeader>
@@ -225,19 +318,21 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
         </Card>
       )}
 
-      {/* Details (For Mutasi Sebagian) */}
-      {permohonan.serviceType === 'MUTASI_SEBAGIAN' && (
+      {/* Details (For Mutasi Sebagian and Objek Pajak Baru) */}
+      {(permohonan.serviceType === 'MUTASI_SEBAGIAN' || permohonan.serviceType === 'OBJEK_PAJAK_BARU') && (
         <div className="space-y-4">
           <h3 className="text-base font-bold text-[#222222] flex items-center gap-2">
-            <Home className="h-5 w-5 text-[#FF385C]" />
-            Daftar Pecahan Objek Pajak Baru
+            <Home className="h-5 w-5 text-[#2563EB]" />
+            {permohonan.serviceType === 'OBJEK_PAJAK_BARU' ? 'Detail Objek Pajak Baru' : 'Daftar Pecahan Objek Pajak Baru'}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {permohonan.details.map((detail, idx) => (
               <Card key={idx} className="border-[#DDDDDD] shadow-sm relative overflow-hidden">
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-[#FF385C]" />
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-[#2563EB]" />
                 <CardHeader className="pb-2 border-b border-[#F7F7F7]">
-                  <CardTitle className="text-sm font-bold">Pecahan #{idx + 1}</CardTitle>
+                  <CardTitle className="text-sm font-bold">
+                    {permohonan.serviceType === 'OBJEK_PAJAK_BARU' ? 'Data Objek Baru' : `Pecahan #${idx + 1}`}
+                  </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4 space-y-3 text-sm">
                   <div>
@@ -266,7 +361,7 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
                   <hr className="border-[#F7F7F7]" />
                   <div>
                     <p className="text-xs text-[#717171] font-semibold">Bukti Kepemilikan</p>
-                    <p className="font-semibold text-xs text-[#FF385C]">{detail.ownershipProof}</p>
+                    <p className="font-semibold text-xs text-[#2563EB]">{detail.ownershipProof}</p>
                   </div>
                 </CardContent>
               </Card>
@@ -277,3 +372,4 @@ export default async function PermohonanDetailPage({ params }: PageProps) {
     </div>
   );
 }
+

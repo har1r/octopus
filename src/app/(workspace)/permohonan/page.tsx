@@ -5,14 +5,6 @@ import Link from 'next/link';
 import { PermohonanService } from '@/services/permohonan.service';
 import { PermohonanFilters as TableFilters } from '@/components/tables/permohonan-filters';
 import { DeletePermohonanButton } from '@/components/shared/delete-permohonan-button';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow
-} from '@/components/ui/table';
 import { Plus, Edit3, ArrowLeft, ArrowRight, Eye } from 'lucide-react';
 import { ServiceType, ApplicationStatus } from '@prisma/client';
 
@@ -27,26 +19,25 @@ function formatNop(nop: string): string {
   return `${nums.substring(0, 2)}.${nums.substring(2, 4)}.${nums.substring(4, 7)}.${nums.substring(7, 10)}.${nums.substring(10, 13)}-${nums.substring(13, 17)}.${nums.substring(17, 18)}`;
 }
 
-// Renders a high-fidelity semantic status badge
+// Renders a high-fidelity semantic status badge in Clay style
 function renderStatusBadge(status: ApplicationStatus) {
   let bg = '';
-  let text = '';
   let dotColor = '';
 
   switch (status) {
     case 'COMPLETED':
     case 'READY_TO_SHIP':
-      bg = 'bg-emerald-50 text-emerald-700 border-emerald-100/80';
+      bg = 'bg-emerald-50/80 text-emerald-800 border-emerald-200/60';
       dotColor = 'bg-emerald-500';
       break;
     case 'REVISION':
     case 'RE_EXAMINE':
-      bg = 'bg-amber-50/70 text-amber-700 border-amber-100';
+      bg = 'bg-amber-50/80 text-amber-800 border-amber-200/60';
       dotColor = 'bg-amber-500';
       break;
     case 'REJECTED':
     case 'REJECTED_PERMANENT':
-      bg = 'bg-rose-50 text-rose-700 border-rose-100';
+      bg = 'bg-rose-50/80 text-rose-800 border-rose-200/60';
       dotColor = 'bg-rose-500';
       break;
     case 'SUBMITTED':
@@ -54,7 +45,7 @@ function renderStatusBadge(status: ApplicationStatus) {
     case 'READY_TO_ARCHIVE':
     case 'SENT_TO_CENTER':
     default:
-      bg = 'bg-blue-50/70 text-blue-700 border-blue-100';
+      bg = 'bg-blue-50/80 text-blue-800 border-blue-200/60';
       dotColor = 'bg-blue-500';
       break;
   }
@@ -62,7 +53,7 @@ function renderStatusBadge(status: ApplicationStatus) {
   const isPulse = status === 'REVISION' || status === 'RE_EXAMINE' || status === 'SUBMITTED';
 
   return (
-    <span className={`inline-flex items-center gap-1.5 text-[10px] font-bold px-2.5 py-1 rounded-full border uppercase tracking-wider ${bg} select-none`}>
+    <span className={`inline-flex items-center gap-1.5 text-[9px] font-bold px-2 py-0.5 rounded border uppercase tracking-wider ${bg} select-none`}>
       <span className={`h-1.5 w-1.5 rounded-full ${dotColor} ${isPulse ? 'animate-pulse' : ''}`} />
       {status.replace(/_/g, ' ')}
     </span>
@@ -110,115 +101,127 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
   const canWrite = ['STAF_PENGINPUT', 'STAF_PENELITI'].includes(userRole);
 
   return (
-    <div className="space-y-6">
-      {/* Top Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-extrabold text-slate-900 font-display tracking-tight">
-            {userRole === 'STAF_PENGINPUT' ? 'Permohonan Saya' : 'Semua Permohonan'}
-          </h1>
-          <p className="text-xs text-slate-500 mt-1 font-medium">
-            Kelola dan pantau seluruh alur berkas permohonan PBB
-          </p>
-        </div>
-        {canWrite && (
-          <Link
-            href="/permohonan/new"
-            className="bg-gradient-to-r from-[#FF385C] to-[#E31C5F] hover:from-[#E31C5F] hover:to-[#C1113C] text-white font-bold rounded-xl h-11 px-5 shadow-md shadow-[#FF385C]/15 flex items-center justify-center gap-1.5 self-start text-sm transition-all duration-150 active:scale-[0.97] cursor-pointer"
-          >
-            <Plus className="h-4.5 w-4.5" /> Buat Permohonan
-          </Link>
-        )}
-      </div>
+    <div className="space-y-5">
+      {/* Filters, Header, and Search Toolbar */}
+      <TableFilters userRole={userRole} canWrite={canWrite} />
 
-      {/* Filters */}
-      <TableFilters />
+      {/* Table (Desktop) */}
+      <div className="hidden md:block -mx-8 border-b border-slate-200 bg-white overflow-x-auto">
+        <div className="min-w-[950px]">
+          <table className="w-full border-collapse text-left table-fixed">
+            <colgroup>
+              <col style={{ width: '32px' }} />
+              <col style={{ width: 'auto' }} />
+              <col style={{ width: '180px' }} />
+              <col style={{ width: '200px' }} />
+              <col style={{ width: '160px' }} />
+              <col style={{ width: '140px' }} />
+              <col style={{ width: '140px' }} />
+              <col style={{ width: '100px' }} />
+              <col style={{ width: '32px' }} />
+            </colgroup>
+            <thead>
+              <tr className="bg-white border-b border-slate-200 h-[34px] text-[11px] font-semibold text-slate-500 uppercase tracking-wider select-none">
+                <th>{/* spacer */}</th>
+                <th className="px-2 py-0 align-middle h-[34px]">No. Berkas</th>
+                <th className="px-2 py-0 align-middle h-[34px]">Jenis Layanan</th>
+                <th className="px-2 py-0 align-middle h-[34px]">NOP</th>
+                <th className="px-2 py-0 align-middle h-[34px]">Pemilik Asal</th>
+                <th className="px-2 py-0 align-middle h-[34px]">Status</th>
+                <th className="px-2 py-0 align-middle h-[34px]">Tanggal Input</th>
+                <th className="px-2 py-0 align-middle h-[34px] text-right">Aksi</th>
+                <th>{/* spacer */}</th>
+              </tr>
+            </thead>
+            <tbody>
+              {items.length === 0 ? (
+                <tr className="h-[46px] border-b border-slate-100">
+                  <td></td>
+                  <td colSpan={7} className="text-center text-slate-400 font-bold text-sm align-middle h-[46px]">
+                    Tidak ada permohonan ditemukan.
+                  </td>
+                  <td></td>
+                </tr>
+              ) : (
+                items.map((item) => {
+                  const isDraftEditable =
+                    userRole === 'STAF_PENGINPUT' &&
+                    (item.status === ApplicationStatus.SUBMITTED || item.status === ApplicationStatus.REVISION);
 
-      {/* Table Card (Desktop) */}
-      <div className="hidden md:block bg-white border border-slate-100 rounded-2xl shadow-sm shadow-slate-100/50 overflow-hidden">
-        <Table>
-          <TableHeader className="bg-slate-50/50 border-b border-slate-100">
-            <TableRow className="border-b border-slate-100 hover:bg-slate-50/50">
-              <TableHead className="font-bold text-slate-500 text-[10px] uppercase tracking-wider w-[140px] py-3">No. Berkas</TableHead>
-              <TableHead className="font-bold text-slate-500 text-[10px] uppercase tracking-wider py-3">Jenis Layanan</TableHead>
-              <TableHead className="font-bold text-slate-500 text-[10px] uppercase tracking-wider w-[200px] py-3">NOP</TableHead>
-              <TableHead className="font-bold text-slate-500 text-[10px] uppercase tracking-wider py-3">Pemilik Asal</TableHead>
-              <TableHead className="font-bold text-slate-500 text-[10px] uppercase tracking-wider w-[160px] py-3">Status</TableHead>
-              <TableHead className="font-bold text-slate-500 text-[10px] uppercase tracking-wider w-[140px] py-3">Tanggal Input</TableHead>
-              <TableHead className="font-bold text-slate-500 text-[10px] uppercase tracking-wider text-right w-[120px] py-3">Aksi</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {items.length === 0 ? (
-              <TableRow>
-                <TableCell colSpan={7} className="h-32 text-center text-slate-400 font-bold text-sm">
-                  Tidak ada permohonan ditemukan.
-                </TableCell>
-              </TableRow>
-            ) : (
-              items.map((item) => {
-                const isDraftEditable =
-                  userRole === 'STAF_PENGINPUT' &&
-                  (item.status === ApplicationStatus.SUBMITTED || item.status === ApplicationStatus.REVISION);
-
-                return (
-                  <TableRow key={item.id} className="border-b border-slate-100 hover:bg-slate-50/30 transition-colors duration-150">
-                    <TableCell className="font-bold text-slate-900 font-display">{item.nomorBerkas}</TableCell>
-                    <TableCell className="font-bold text-xs text-slate-800">
-                      {item.serviceType.replace(/_/g, ' ')}
-                    </TableCell>
-                    <TableCell className="font-mono text-xs text-slate-800">
-                      {formatNop(item.nop)}
-                    </TableCell>
-                    <TableCell className="text-slate-800 font-semibold text-xs">
-                      {item.oldOwnerName || '-'}
-                    </TableCell>
-                    <TableCell>
-                      {renderStatusBadge(item.status)}
-                    </TableCell>
-                    <TableCell className="text-xs text-slate-500 font-semibold">
-                      {new Date(item.createdAt).toLocaleDateString('id-ID', {
-                        day: 'numeric',
-                        month: 'short',
-                        year: 'numeric'
-                      })}
-                    </TableCell>
-                    <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-1.5">
-                        {isDraftEditable ? (
-                          <>
+                  return (
+                    <tr
+                      key={item.id}
+                      className="h-[46px] text-[13px] text-slate-900 border-b border-slate-100 hover:bg-[#F9FAFB] transition-colors duration-150"
+                    >
+                      <td>{/* spacer */}</td>
+                      <td className="px-2 py-0 align-middle h-[46px] font-semibold text-blue-600">
+                        <Link href={`/permohonan/${item.id}`} className="hover:underline inline-flex items-center gap-1.5">
+                          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" viewBox="0 0 256 256" className="text-slate-400 h-4 w-4 flex-shrink-0">
+                            <path d="M80,40V216H48a8,8,0,0,1-8-8V48a8,8,0,0,1,8-8Z" opacity="0.2"></path>
+                            <path d="M184,112a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16h64A8,8,0,0,1,184,112Zm-8,24H112a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm48-88V208a16,16,0,0,1-16,16H48a16,16,0,0,1-16-16V48A16,16,0,0,1,48,32H208A16,16,0,0,1,224,48ZM48,208H72V48H48Zm160,0V48H88V208H208Z"></path>
+                          </svg>
+                          {item.nomorBerkas}
+                        </Link>
+                      </td>
+                      <td className="px-2 py-0 align-middle h-[46px] font-medium text-slate-800">
+                        <span className="inline-block bg-[#EFF6FF] text-[#1D4ED8] px-2 py-0.5 rounded border border-[#DBEAFE] text-[10px] font-bold uppercase tracking-wider">
+                          {item.serviceType.replace(/_/g, ' ')}
+                        </span>
+                      </td>
+                      <td className="px-2 py-0 align-middle h-[46px] font-mono text-xs text-slate-600">
+                        {formatNop(item.nop)}
+                      </td>
+                      <td className="px-2 py-0 align-middle h-[46px] text-slate-700 font-semibold text-xs">
+                        {item.oldOwnerName || '-'}
+                      </td>
+                      <td className="px-2 py-0 align-middle h-[46px]">
+                        {renderStatusBadge(item.status)}
+                      </td>
+                      <td className="px-2 py-0 align-middle h-[46px] text-xs text-slate-500 font-semibold">
+                        {new Date(item.createdAt).toLocaleDateString('id-ID', {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric'
+                        })}
+                      </td>
+                      <td className="px-2 py-0 align-middle h-[46px] text-right">
+                        <div className="flex items-center justify-end gap-1.5">
+                          {isDraftEditable ? (
+                            <>
+                              <Link
+                                href={`/permohonan/${item.id}/edit`}
+                                className="text-amber-600 hover:text-amber-700 hover:bg-amber-50 border border-amber-200 rounded-lg p-2 h-8 w-8 inline-flex items-center justify-center transition-all duration-150 active:scale-95 cursor-pointer shadow-xs"
+                                title="Edit Revisi"
+                              >
+                                <Edit3 className="h-3.5 w-3.5" />
+                              </Link>
+                              <DeletePermohonanButton id={item.id} nomorBerkas={item.nomorBerkas} />
+                            </>
+                          ) : (
                             <Link
-                              href={`/permohonan/${item.id}/edit`}
-                              className="text-amber-500 hover:text-white hover:bg-amber-500 border border-amber-200 hover:border-amber-500 rounded-xl p-2 h-9 w-9 inline-flex items-center justify-center transition-all duration-150 active:scale-90 cursor-pointer shadow-sm shadow-amber-500/5"
-                              title="Edit Revisi"
+                              href={`/permohonan/${item.id}`}
+                              className="text-slate-500 hover:text-slate-800 hover:bg-slate-50 border border-slate-200 rounded-lg p-2 h-8 w-8 inline-flex items-center justify-center transition-all duration-150 active:scale-95 cursor-pointer shadow-xs"
+                              title="Lihat Detail"
                             >
-                              <Edit3 className="h-4 w-4" />
+                              <Eye className="h-3.5 w-3.5" />
                             </Link>
-                            <DeletePermohonanButton id={item.id} nomorBerkas={item.nomorBerkas} />
-                          </>
-                        ) : (
-                          <Link
-                            href={`/permohonan/${item.id}`}
-                            className="text-slate-400 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 rounded-xl p-2 h-9 w-9 inline-flex items-center justify-center transition-all duration-150 active:scale-90 cursor-pointer shadow-sm shadow-slate-100"
-                            title="Lihat Detail"
-                          >
-                            <Eye className="h-4 w-4" />
-                          </Link>
-                        )}
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })
-            )}
-          </TableBody>
-        </Table>
+                          )}
+                        </div>
+                      </td>
+                      <td>{/* spacer */}</td>
+                    </tr>
+                  );
+                })
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
 
       {/* Card List (Mobile) */}
-      <div className="md:hidden space-y-4">
+      <div className="md:hidden space-y-3">
         {items.length === 0 ? (
-          <div className="bg-white border border-slate-100 rounded-2xl p-8 text-center text-slate-400 font-bold">
+          <div className="bg-white border border-slate-200 rounded-lg p-8 text-center text-slate-400 font-bold">
             Tidak ada permohonan ditemukan.
           </div>
         ) : (
@@ -230,11 +233,13 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
             return (
               <div
                 key={item.id}
-                className="bg-white border border-slate-100 rounded-2xl p-5 shadow-sm shadow-slate-100/40 flex flex-col gap-4 hover:border-slate-200 transition-all duration-200"
+                className="bg-white border border-slate-200 rounded-lg p-4 shadow-sm flex flex-col gap-3 hover:border-slate-300 transition-all duration-200"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="overflow-hidden">
-                    <p className="font-extrabold text-slate-900 text-sm font-display truncate">{item.nomorBerkas}</p>
+                    <Link href={`/permohonan/${item.id}`} className="font-bold text-blue-600 text-sm hover:underline block truncate">
+                      {item.nomorBerkas}
+                    </Link>
                     <p className="text-[10px] text-slate-500 font-medium mt-1">
                       NOP: <span className="font-mono">{formatNop(item.nop)}</span>
                     </p>
@@ -244,20 +249,20 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-2 border-t border-slate-50 pt-3 text-xs">
+                <div className="grid grid-cols-2 gap-2 border-t border-slate-100 pt-2.5 text-xs">
                   <div>
                     <p className="text-slate-400 font-bold text-[9px] uppercase tracking-wider">Jenis Layanan</p>
-                    <p className="font-bold text-slate-800 mt-0.5 text-xs truncate">
+                    <p className="font-bold text-slate-700 mt-0.5 text-xs truncate">
                       {item.serviceType.replace(/_/g, ' ')}
                     </p>
                   </div>
                   <div>
                     <p className="text-slate-400 font-bold text-[9px] uppercase tracking-wider">Pemilik Asal</p>
-                    <p className="font-bold text-slate-800 mt-0.5 text-xs truncate">{item.oldOwnerName || '-'}</p>
+                    <p className="font-bold text-slate-700 mt-0.5 text-xs truncate">{item.oldOwnerName || '-'}</p>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between border-t border-slate-50 pt-3 text-xs">
+                <div className="flex items-center justify-between border-t border-slate-100 pt-2.5 text-xs">
                   <span className="text-slate-400 text-[10px] font-semibold">
                     {new Date(item.createdAt).toLocaleDateString('id-ID', {
                       day: 'numeric',
@@ -270,20 +275,20 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
                       <>
                         <Link
                           href={`/permohonan/${item.id}/edit`}
-                          className="text-amber-500 hover:text-white hover:bg-amber-500 border border-amber-200 rounded-xl p-2 h-9 w-9 inline-flex items-center justify-center transition-all duration-150 active:scale-90 cursor-pointer shadow-sm shadow-amber-500/5"
+                          className="text-amber-600 hover:bg-amber-50 border border-amber-200 rounded-lg p-1.5 h-8 w-8 inline-flex items-center justify-center transition-all duration-150 active:scale-95 cursor-pointer shadow-xs"
                           title="Edit Revisi"
                         >
-                          <Edit3 className="h-4 w-4" />
+                          <Edit3 className="h-3.5 w-3.5" />
                         </Link>
                         <DeletePermohonanButton id={item.id} nomorBerkas={item.nomorBerkas} />
                       </>
                     ) : (
                       <Link
                         href={`/permohonan/${item.id}`}
-                        className="text-slate-400 hover:text-slate-800 hover:bg-slate-100 border border-slate-200 rounded-xl p-2 h-9 w-9 inline-flex items-center justify-center transition-all duration-150 active:scale-90 cursor-pointer shadow-sm shadow-slate-100"
+                        className="text-slate-500 hover:bg-slate-50 border border-slate-200 rounded-lg p-1.5 h-8 w-8 inline-flex items-center justify-center transition-all duration-150 active:scale-95 cursor-pointer shadow-xs"
                         title="Lihat Detail"
                       >
-                        <Eye className="h-4 w-4" />
+                        <Eye className="h-3.5 w-3.5" />
                       </Link>
                     )}
                   </div>
@@ -296,8 +301,8 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
 
       {/* Server Side Pagination Controls */}
       {totalPages > 1 && (
-        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-6 py-4 border border-slate-100 bg-white rounded-2xl shadow-sm shadow-slate-100/30">
-          <p className="text-xs text-slate-500 font-bold select-none">
+        <div className="flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-3 border border-slate-200 bg-white rounded-lg shadow-sm">
+          <p className="text-xs text-slate-500 font-medium select-none">
             Menampilkan {items.length} dari {total} permohonan
           </p>
           <div className="flex items-center gap-3">
@@ -308,12 +313,12 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
                 ...(serviceType ? { serviceType } : {}),
                 ...(status ? { status } : {}),
               }).toString()}`}
-              className={`border border-slate-200 hover:bg-slate-50 hover:text-slate-900 rounded-xl h-9 px-4 font-bold text-xs flex items-center gap-1.5 text-slate-700 transition-all duration-150 active:scale-95 cursor-pointer shadow-sm ${currentPage <= 1 ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
+              className={`border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-md h-8 px-3 font-semibold text-xs flex items-center gap-1.5 transition-all duration-150 active:scale-95 shadow-xs cursor-pointer ${currentPage <= 1 ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
                 }`}
             >
               <ArrowLeft className="h-3.5 w-3.5" /> Sebelumnya
             </Link>
-            <span className="text-xs font-extrabold text-slate-800 font-display select-none">
+            <span className="text-xs font-bold text-slate-800 select-none">
               {currentPage} / {totalPages}
             </span>
             <Link
@@ -323,7 +328,7 @@ export default async function PermohonanListPage({ searchParams }: PageProps) {
                 ...(serviceType ? { serviceType } : {}),
                 ...(status ? { status } : {}),
               }).toString()}`}
-              className={`border border-slate-200 hover:bg-slate-50 hover:text-slate-900 rounded-xl h-9 px-4 font-bold text-xs flex items-center gap-1.5 text-slate-700 transition-all duration-150 active:scale-95 cursor-pointer shadow-sm ${currentPage >= totalPages ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
+              className={`border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-md h-8 px-3 font-semibold text-xs flex items-center gap-1.5 transition-all duration-150 active:scale-95 shadow-xs cursor-pointer ${currentPage >= totalPages ? 'pointer-events-none opacity-50 bg-slate-50/20' : ''
                 }`}
             >
               Selanjutnya <ArrowRight className="h-3.5 w-3.5" />

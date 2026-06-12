@@ -14,7 +14,7 @@ export default async function NewPermohonanPage() {
     redirect('/login');
   }
 
-  const allowedRoles = ['STAF_PENGINPUT', 'STAF_PENELITI'];
+  const allowedRoles = ['STAF_PENGINPUT'];
   if (!allowedRoles.includes(session.user.role)) {
     redirect('/forbidden');
   }

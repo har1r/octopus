@@ -232,7 +232,7 @@ export function ShippingKanban({ manifest, manifestBundles, availableBundles }: 
                   key={bundle.id}
                   draggable
                   onDragStart={() => handleDragStart(bundle.id, 'ready')}
-                  className="bg-white border border-[#DDDDDD] hover:border-[#FF385C] rounded-xl p-4 shadow-sm cursor-grab active:cursor-grabbing flex flex-col justify-between gap-3 group relative transition-colors"
+                  className="bg-white border border-[#DDDDDD] hover:border-[#2563EB] rounded-xl p-4 shadow-sm cursor-grab active:cursor-grabbing flex flex-col justify-between gap-3 group relative transition-colors"
                 >
                   <div>
                     <p className="font-bold text-sm text-[#222222]">{bundle.bundleNumber}</p>
@@ -241,7 +241,7 @@ export function ShippingKanban({ manifest, manifestBundles, availableBundles }: 
                   </div>
                   <Button
                     onClick={() => moveRight(bundle.id)}
-                    className="sm:hidden absolute top-2 right-2 text-[#717171] hover:text-[#FF385C]"
+                    className="sm:hidden absolute top-2 right-2 text-[#717171] hover:text-[#2563EB]"
                     variant="ghost"
                     size="sm"
                   >
@@ -249,7 +249,7 @@ export function ShippingKanban({ manifest, manifestBundles, availableBundles }: 
                   </Button>
                   <button
                     onClick={() => moveRight(bundle.id)}
-                    className="hidden sm:flex self-end items-center gap-1 text-[10px] font-bold text-[#FF385C] opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="hidden sm:flex self-end items-center gap-1 text-[10px] font-bold text-[#2563EB] opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     Pindahkan <ArrowRight className="h-3 w-3" />
                   </button>
@@ -310,7 +310,7 @@ export function ShippingKanban({ manifest, manifestBundles, availableBundles }: 
           <Card className="border-[#DDDDDD] shadow-sm">
             <CardHeader className="pb-3 border-b border-[#F7F7F7]">
               <CardTitle className="text-sm font-bold flex items-center gap-1.5 text-[#222222]">
-                <Truck className="h-4 w-4 text-[#FF385C]" /> Detail Manifest
+                <Truck className="h-4 w-4 text-[#2563EB]" /> Detail Manifest
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-4 text-sm">
@@ -367,11 +367,11 @@ export function ShippingKanban({ manifest, manifestBundles, availableBundles }: 
                       disabled={isPending}
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
-                    <Upload className="h-5 w-5 text-[#FF385C] mx-auto mb-1" />
+                    <Upload className="h-5 w-5 text-[#2563EB] mx-auto mb-1" />
                     <p className="text-xs font-bold text-[#222222]">Unggah File Tanda Tangan</p>
                     {isPending && (
                       <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-lg">
-                        <Loader2 className="h-4 w-4 animate-spin text-[#FF385C]" />
+                        <Loader2 className="h-4 w-4 animate-spin text-[#2563EB]" />
                       </div>
                     )}
                   </div>
@@ -383,7 +383,7 @@ export function ShippingKanban({ manifest, manifestBundles, availableBundles }: 
               <Button
                 onClick={handleApproveManifest}
                 disabled={isPending || !manifest.signedProofUrl || manifestColumn.length === 0}
-                className="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white font-semibold rounded-lg h-10 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50"
+                className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg h-10 shadow-sm flex items-center justify-center gap-1.5 disabled:opacity-50 cursor-pointer"
               >
                 {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <ShieldCheck className="h-4 w-4" />}
                 Kirim Manifest (Approve)

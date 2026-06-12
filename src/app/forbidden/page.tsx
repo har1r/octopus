@@ -17,7 +17,7 @@ export default function ForbiddenPage() {
         <div className="w-full flex flex-col gap-3">
           <Link
             href="/dashboard"
-            className="w-full bg-[#FF385C] hover:bg-[#E31C5F] text-white font-semibold flex items-center justify-center h-11 rounded-lg text-sm transition-colors shadow-sm"
+            className="w-full bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold flex items-center justify-center h-11 rounded-lg text-sm transition-colors shadow-sm cursor-pointer"
           >
             Kembali ke Dashboard
           </Link>

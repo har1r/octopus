@@ -137,11 +137,11 @@ export async function GET(
     }
 
     .btn-primary {
-      background-color: #FF385C;
+      background-color: #2563EB;
       color: white;
     }
     .btn-primary:hover {
-      background-color: #E31C5F;
+      background-color: #1D4ED8;
     }
 
     .btn-secondary {
@@ -387,7 +387,7 @@ export async function GET(
 
   <div class="no-print-bar">
     <div style="display: flex; align-items: center; gap: 12px;">
-      <span style="font-weight: 700; font-size: 16px; color: #FF385C;">ARCHITAX</span>
+      <span style="font-weight: 700; font-size: 16px; color: #2563EB;">ARCHITAX</span>
       <span style="color: #dddddd;">|</span>
       <span style="font-size: 14px; font-weight: 500; color: #717171;">Pratinjau Surat Pengantar & Lampiran</span>
     </div>

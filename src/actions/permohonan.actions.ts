@@ -12,9 +12,8 @@ export async function createPermohonanAction(values: unknown) {
     return { success: false, error: 'Anda harus masuk terlebih dahulu.' };
   }
 
-  // Enforce STAF_PENGINPUT or STAF_PENELITI role
-  const allowedRoles = ['STAF_PENGINPUT', 'STAF_PENELITI'];
-  if (!allowedRoles.includes(session.user.role)) {
+  // Enforce STAF_PENGINPUT role
+  if (session.user.role !== 'STAF_PENGINPUT') {
     return { success: false, error: 'Anda tidak memiliki hak akses untuk membuat permohonan.' };
   }
 
@@ -42,6 +41,11 @@ export async function updatePermohonanAction(id: string, values: unknown) {
     return { success: false, error: 'Anda harus masuk terlebih dahulu.' };
   }
 
+  // Enforce STAF_PENGINPUT role
+  if (session.user.role !== 'STAF_PENGINPUT') {
+    return { success: false, error: 'Anda tidak memiliki hak akses untuk mengubah permohonan.' };
+  }
+
   const parsed = permohonanSchema.safeParse(values);
   if (!parsed.success) {
     return { success: false, error: parsed.error.issues[0].message };
@@ -67,6 +71,11 @@ export async function deletePermohonanAction(id: string) {
     return { success: false, error: 'Anda harus masuk terlebih dahulu.' };
   }
 
+  // Enforce STAF_PENGINPUT role
+  if (session.user.role !== 'STAF_PENGINPUT') {
+    return { success: false, error: 'Anda tidak memiliki hak akses untuk menghapus permohonan.' };
+  }
+
   const result = await PermohonanService.delete(id, {
     id: session.user.id,
     name: session.user.name || session.user.username,
@@ -80,7 +89,7 @@ export async function deletePermohonanAction(id: string) {
   return result;
 }
 
-export async function requestRevisionAction(id: string) {
+export async function requestRevisionAction(id: string, revisionNote?: string) {
   const session = await auth();
   if (!session?.user) {
     return { success: false, error: 'Anda harus masuk terlebih dahulu.' };
@@ -90,7 +99,7 @@ export async function requestRevisionAction(id: string) {
     return { success: false, error: 'Hanya Staf Peneliti yang berwenang mengajukan revisi.' };
   }
 
-  const result = await PermohonanService.requestRevision(id, {
+  const result = await PermohonanService.requestRevision(id, revisionNote, {
     id: session.user.id,
     name: session.user.name || session.user.username,
     role: session.user.role,

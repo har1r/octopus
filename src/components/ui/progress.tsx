@@ -19,7 +19,7 @@ function Progress({ className, value = 0, style, ...props }: ProgressProps) {
         className="h-full transition-all rounded-full"
         style={{ 
           width: `${Math.min(100, Math.max(0, value || 0))}%`, 
-          backgroundColor: customBg || '#FF385C'
+          backgroundColor: customBg || '#2563EB'
         }}
       />
     </div>

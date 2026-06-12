@@ -7,7 +7,7 @@
 ## A. WORKFLOW PROCESS (ALUR KERJA)
 
 ### 1. Tahap Penginputan (Input Stage)
-* Pemohon atau **STAF_PENGINPUT** mengisi data pada formulir permohonan digital berdasarkan berkas fisik yang diajukan.
+* **STAF_PENGINPUT** mengisi data pada formulir permohonan digital berdasarkan berkas fisik yang diajukan.
 * **Jenis Pelayanan:** Objek Pajak Baru, Mutasi Sebagian, Mutasi Habis Update, Mutasi Habis Reguler, Pembetulan, atau Pengaktifan.
 * **Ketentuan:** Tanpa melakukan unggah (*upload*) dokumen/lampiran apa pun di tahap ini.
 * **Status Perubahan:** Setelah dikirim secara digital, status berubah menjadi **`SUBMITTED`**.
@@ -148,28 +148,9 @@ Tabel dinamis (array) untuk *Mutasi Sebagian*, form tunggal untuk pelayanan lain
 * Notifikasi WA otomatis ke pemohon saat aksi kritis (Minta Revisi / Approve Akhir).
 * *Toast Notification* di sudut kanan bawah (`💬 WhatsApp Notifikasi berhasil...`).
 
-### 6. Public Tracking Portal (Tanpa Login)
-* *Hero Search Container* (Cek resi via No Pelayanan + NOP). Masking input NOP.
-* *Public Stepper UI*:
-    * `SUBMITTED`/`DRAFT_BUNDLE` $
-ightarrow$ ⏳ Diterima & Diteliti (`#F59E0B`)
-    * `READY_TO_ARCHIVE`/`RE_EXAMINE` $
-ightarrow$ 📋 Proses Digitalisasi (`#4A5568`)
-    * `READY_TO_SHIP`/`SENT_TO_CENTER` $
-ightarrow$ 🚚 Dikirim ke Pusat (`#3B82F6`)
-    * `REVISION` $
-ightarrow$ ⚠️ Butuh Perbaikan + Alert Banner Catatan Revisi & Countdown Waktu.
-    * `REJECTED`/`REJECTED_PERMANENT` $
-ightarrow$ ❌ Ditolak Permanen (`#EF4444`)
-    * `COMPLETED` $
-ightarrow$ ✅ Selesai Sempurna (`#10B981`)
-* **Zero Personal Data Exposure:** Nama dan Alamat disembunyikan.
-
----
-
 ## E. NON-FUNCTIONAL REQUIREMENTS: RESPONSIVENESS
 
-1.  **Mobile-First & Breakpoints:** Wajib menggunakan utility-first classes (Tailwind CSS). Tahap 1 (Form) & Public Tracking WAJIB 100% responsif. Mobile `< 768px` harus *stacked layout*. Touch target tombol minimal `44x44px`.
+1.  **Mobile-First & Breakpoints:** Wajib menggunakan utility-first classes (Tailwind CSS). Tahap 1 (Form) WAJIB 100% responsif. Mobile `< 768px` harus *stacked layout*. Touch target tombol minimal `44x44px`.
 2.  **Adaptasi Komponen:** Tabel berubah menjadi *List Card Layout* di mobile. Supervisor dashboard jadi 1 kolom grid di mobile. Grafik harus *fluid/responsive*. *Drag-and-Drop* diganti dengan tombol *dropdown action* khusus di mobile.
 
 ---

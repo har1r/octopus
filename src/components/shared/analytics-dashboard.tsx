@@ -62,7 +62,7 @@ export function AnalyticsDashboard({ metrics, servicesData, slaData }: Analytics
   if (!mounted) {
     return (
       <div className="h-96 flex flex-col items-center justify-center gap-2">
-        <Loader2 className="h-8 w-8 animate-spin text-[#FF385C]" />
+        <Loader2 className="h-8 w-8 animate-spin text-[#2563EB]" />
         <span className="text-xs text-[#717171] font-semibold">Memuat Grafik Analitik...</span>
       </div>
     );
@@ -144,7 +144,7 @@ export function AnalyticsDashboard({ metrics, servicesData, slaData }: Analytics
         <Card className="border-[#DDDDDD] shadow-sm">
           <CardHeader>
             <CardTitle className="text-sm font-bold text-[#222222] flex items-center gap-1.5">
-              <BarChart3 className="h-4 w-4 text-[#FF385C]" /> Distribusi Jenis Pelayanan
+              <BarChart3 className="h-4 w-4 text-[#2563EB]" /> Distribusi Jenis Pelayanan
             </CardTitle>
             <CardDescription className="text-xs">
               Jumlah berkas permohonan berdasarkan jenis pelayanan PBB.
@@ -171,7 +171,7 @@ export function AnalyticsDashboard({ metrics, servicesData, slaData }: Analytics
                     contentStyle={{ fontSize: '11px', borderRadius: '8px', border: '1px solid #DDDDDD' }}
                     cursor={{ fill: '#F7F7F7' }}
                   />
-                  <Bar dataKey="value" name="Jumlah Berkas" fill="#FF385C" radius={[4, 4, 0, 0]} />
+                  <Bar dataKey="value" name="Jumlah Berkas" fill="#2563EB" radius={[4, 4, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
             )}

@@ -125,7 +125,7 @@ export default async function BundleListPage({ searchParams }: PageProps) {
                     {item.serviceType.replace(/_/g, ' ')}
                   </TableCell>
                   <TableCell>
-                    <span className="text-xs font-extrabold text-[#FF385C] bg-[#FF385C]/5 px-2.5 py-1 rounded-full border border-[#FF385C]/10 select-none">
+                    <span className="text-xs font-extrabold text-[#2563EB] bg-[#2563EB]/5 px-2.5 py-1 rounded-full border border-[#2563EB]/10 select-none">
                       {item.itemCount} Berkas
                     </span>
                   </TableCell>

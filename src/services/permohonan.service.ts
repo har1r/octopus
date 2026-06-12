@@ -52,13 +52,6 @@ export class PermohonanService {
             error: `Total luas tanah pecahan (${sumLand} m²) melebihi luas tanah asal (${oldLand} m²).` 
           };
         }
-
-        if (sumBldg > oldBldg) {
-          return { 
-            success: false, 
-            error: `Total luas bangunan pecahan (${sumBldg} m²) melebihi luas bangunan asal (${oldBldg} m²).` 
-          };
-        }
       }
 
       // 4. Generate Nomor Berkas and set status to SUBMITTED
@@ -148,25 +141,27 @@ export class PermohonanService {
             error: `Total luas tanah pecahan (${sumLand} m²) melebihi luas tanah asal (${oldLand} m²).` 
           };
         }
-
-        if (sumBldg > oldBldg) {
-          return { 
-            success: false, 
-            error: `Total luas bangunan pecahan (${sumBldg} m²) melebihi luas bangunan asal (${oldBldg} m²).` 
-          };
-        }
       }
 
-      const updated = await PermohonanRepository.update(id, data);
+      const updatePayload: Prisma.PermohonanUncheckedUpdateInput = {
+        ...data,
+      };
 
-      // Log the update
+      const isResubmission = existing.status === ApplicationStatus.REVISION;
+      if (isResubmission) {
+        updatePayload.status = ApplicationStatus.SUBMITTED;
+      }
+
+      const updated = await PermohonanRepository.update(id, updatePayload);
+
+      // Log the update/resubmit
       await AuditService.log({
         userId: user.id,
         userName: user.name,
         userRole: user.role,
         entityType: 'Permohonan',
         entityId: id,
-        action: 'UPDATE',
+        action: isResubmission ? 'RESUBMIT' : 'UPDATE',
         oldValue: existing,
         newValue: updated,
       });
@@ -241,6 +236,7 @@ export class PermohonanService {
 
   static async requestRevision(
     id: string,
+    revisionNote: string | null | undefined,
     user: { id: string; name: string; role: string }
   ): Promise<Result<Permohonan>> {
     try {
@@ -260,6 +256,7 @@ export class PermohonanService {
 
       const updated = await PermohonanRepository.update(id, {
         status: ApplicationStatus.REVISION,
+        revisionNote: revisionNote || null,
       });
 
       // Audit Log
@@ -279,7 +276,8 @@ export class PermohonanService {
         await NotificationService.notifyPermohonanStatus(
           existing.nomorBerkas,
           ApplicationStatus.REVISION,
-          existing.applicantPhone
+          existing.applicantPhone,
+          revisionNote || undefined
         );
       }
 

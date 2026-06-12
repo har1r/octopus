@@ -57,22 +57,27 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
   };
 
   const handleRevision = (id: string, nomorBerkas: string) => {
-    if (confirm(`Apakah Anda yakin ingin meminta REVISI untuk berkas ${nomorBerkas}?`)) {
-      startTransition(async () => {
-        try {
-          const result = await requestRevisionAction(id);
-          if (result.success) {
-            toast.success(`Berkas ${nomorBerkas} dikembalikan untuk revisi`);
-            setSelectedIds(prev => prev.filter(item => item !== id));
-            router.refresh();
-          } else {
-            toast.error(result.error || 'Gagal mengajukan revisi');
-          }
-        } catch (error: any) {
-          toast.error(error.message || 'Terjadi kesalahan');
-        }
-      });
+    const note = prompt(`Masukkan catatan revisi / alasan perbaikan untuk berkas ${nomorBerkas}:`);
+    if (note === null) return; // cancelled
+    if (note.trim() === '') {
+      alert('Catatan revisi wajib diisi agar staf penginput tahu bagian mana yang harus diperbaiki.');
+      return;
     }
+
+    startTransition(async () => {
+      try {
+        const result = await requestRevisionAction(id, note.trim());
+        if (result.success) {
+          toast.success(`Berkas ${nomorBerkas} dikembalikan untuk revisi`);
+          setSelectedIds(prev => prev.filter(item => item !== id));
+          router.refresh();
+        } else {
+          toast.error(result.error || 'Gagal mengajukan revisi');
+        }
+      } catch (error: any) {
+        toast.error(error.message || 'Terjadi kesalahan');
+      }
+    });
   };
 
   const handleReject = (id: string, nomorBerkas: string) => {
@@ -124,25 +129,25 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
       {/* Quick Filter Tabs */}
       <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
         <TabsList className="flex flex-wrap h-auto bg-white border border-[#DDDDDD] p-1 rounded-xl shadow-sm gap-1">
-          <TabsTrigger value="ALL" className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#FF385C] data-[state=active]:text-white">
+          <TabsTrigger value="ALL" className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#2563EB] data-[state=active]:text-white">
             Semua ({initialItems.length})
           </TabsTrigger>
-          <TabsTrigger value={ServiceType.OBJEK_PAJAK_BARU} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#FF385C] data-[state=active]:text-white">
+          <TabsTrigger value={ServiceType.OBJEK_PAJAK_BARU} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#2563EB] data-[state=active]:text-white">
             Objek Pajak Baru ({initialItems.filter(i => i.serviceType === ServiceType.OBJEK_PAJAK_BARU).length})
           </TabsTrigger>
-          <TabsTrigger value={ServiceType.MUTASI_SEBAGIAN} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#FF385C] data-[state=active]:text-white">
+          <TabsTrigger value={ServiceType.MUTASI_SEBAGIAN} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#2563EB] data-[state=active]:text-white">
             Mutasi Sebagian ({initialItems.filter(i => i.serviceType === ServiceType.MUTASI_SEBAGIAN).length})
           </TabsTrigger>
-          <TabsTrigger value={ServiceType.MUTASI_HABIS_UPDATE} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#FF385C] data-[state=active]:text-white">
+          <TabsTrigger value={ServiceType.MUTASI_HABIS_UPDATE} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#2563EB] data-[state=active]:text-white">
             Mutasi Habis (Update) ({initialItems.filter(i => i.serviceType === ServiceType.MUTASI_HABIS_UPDATE).length})
           </TabsTrigger>
-          <TabsTrigger value={ServiceType.MUTASI_HABIS_REGULER} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#FF385C] data-[state=active]:text-white">
+          <TabsTrigger value={ServiceType.MUTASI_HABIS_REGULER} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#2563EB] data-[state=active]:text-white">
             Mutasi Habis (Reguler) ({initialItems.filter(i => i.serviceType === ServiceType.MUTASI_HABIS_REGULER).length})
           </TabsTrigger>
-          <TabsTrigger value={ServiceType.PEMBETULAN} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#FF385C] data-[state=active]:text-white">
+          <TabsTrigger value={ServiceType.PEMBETULAN} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#2563EB] data-[state=active]:text-white">
             Pembetulan ({initialItems.filter(i => i.serviceType === ServiceType.PEMBETULAN).length})
           </TabsTrigger>
-          <TabsTrigger value={ServiceType.PENGAKTIFAN} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#FF385C] data-[state=active]:text-white">
+          <TabsTrigger value={ServiceType.PENGAKTIFAN} className="font-semibold text-xs py-2 px-3 rounded-lg data-[state=active]:bg-[#2563EB] data-[state=active]:text-white">
             Pengaktifan ({initialItems.filter(i => i.serviceType === ServiceType.PENGAKTIFAN).length})
           </TabsTrigger>
         </TabsList>
@@ -159,7 +164,7 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
                   checked={filteredItems.length > 0 && selectedIds.length === filteredItems.length}
                   onChange={toggleSelectAll}
                   disabled={isPending}
-                  className="rounded border-[#DDDDDD] text-[#FF385C] focus:ring-[#FF385C]"
+                  className="rounded border-[#DDDDDD] text-[#2563EB] focus:ring-[#2563EB]"
                 />
               </TableHead>
               <TableHead className="font-bold text-[#222222] w-[140px]">No. Berkas</TableHead>
@@ -185,7 +190,7 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
                   <TableRow 
                     key={item.id} 
                     className={`border-b border-[#DDDDDD] transition-colors ${
-                      isSelected ? 'bg-[#FF385C]/5 hover:bg-[#FF385C]/10' : 'hover:bg-[#F7F7F7]/50'
+                      isSelected ? 'bg-[#2563EB]/5 hover:bg-[#2563EB]/10' : 'hover:bg-[#F7F7F7]/50'
                     }`}
                   >
                     <TableCell className="text-center">
@@ -194,7 +199,7 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
                         checked={isSelected}
                         onChange={() => toggleSelect(item.id)}
                         disabled={isPending}
-                        className="rounded border-[#DDDDDD] text-[#FF385C] focus:ring-[#FF385C]"
+                        className="rounded border-[#DDDDDD] text-[#2563EB] focus:ring-[#2563EB]"
                       />
                     </TableCell>
                     <TableCell className="font-bold text-[#222222]">{item.nomorBerkas}</TableCell>
@@ -264,7 +269,7 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
               <div 
                 key={item.id}
                 className={`bg-white border rounded-xl p-4 shadow-sm flex flex-col gap-3 transition-colors ${
-                  isSelected ? 'border-[#FF385C] bg-[#FF385C]/5' : 'border-[#DDDDDD]'
+                  isSelected ? 'border-[#2563EB] bg-[#2563EB]/5' : 'border-[#DDDDDD]'
                 }`}
               >
                 <div className="flex items-start justify-between">
@@ -274,7 +279,7 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
                       checked={isSelected}
                       onChange={() => toggleSelect(item.id)}
                       disabled={isPending}
-                      className="rounded border-[#DDDDDD] text-[#FF385C] focus:ring-[#FF385C] mt-1"
+                      className="rounded border-[#DDDDDD] text-[#2563EB] focus:ring-[#2563EB] mt-1"
                     />
                     <div>
                       <p className="font-bold text-[#222222] text-sm">{item.nomorBerkas}</p>
@@ -342,7 +347,7 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
       {selectedIds.length > 0 && (
         <div className="fixed bottom-6 left-1/2 -translate-x-1/2 bg-[#222222] text-white px-6 py-4 rounded-2xl shadow-2xl flex items-center gap-6 z-50 border border-white/10 animate-in fade-in slide-in-from-bottom-4 duration-300">
           <div className="flex items-center gap-2">
-            <span className="h-6 w-6 rounded-full bg-[#FF385C] flex items-center justify-center text-xs font-bold text-white">
+            <span className="h-6 w-6 rounded-full bg-[#2563EB] flex items-center justify-center text-xs font-bold text-white">
               {selectedIds.length}
             </span>
             <span className="text-sm font-bold">Berkas Dipilih</span>
@@ -353,7 +358,7 @@ export function ValidationQueue({ initialItems }: ValidationQueueProps) {
           <Button
             onClick={handleCreateBundle}
             disabled={selectedIds.length > 20}
-            className="bg-[#FF385C] hover:bg-[#E31C5F] text-white text-xs font-bold rounded-lg h-9 px-4 flex items-center gap-1.5 shadow-md active:scale-95 transition-all"
+            className="bg-[#2563EB] hover:bg-[#1D4ED8] text-white text-xs font-bold rounded-lg h-9 px-4 flex items-center gap-1.5 shadow-md active:scale-95 transition-all cursor-pointer"
           >
             <Package className="h-4 w-4" />
             Buat Bundle {selectedIds.length > 20 && '(Maks 20)'}

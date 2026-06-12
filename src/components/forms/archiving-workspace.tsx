@@ -207,7 +207,7 @@ export function ArchivingWorkspace({ bundle, userRole }: ArchivingWorkspaceProps
           </div>
         </CardHeader>
         <CardContent>
-          <Progress value={progressPercent} className="h-2.5 bg-[#DDDDDD]" style={{ '--progress-background': '#FF385C' } as any} />
+          <Progress value={progressPercent} className="h-2.5 bg-[#DDDDDD]" style={{ '--progress-background': '#2563EB' } as any} />
         </CardContent>
       </Card>
 
@@ -231,7 +231,7 @@ export function ArchivingWorkspace({ bundle, userRole }: ArchivingWorkspaceProps
                     setPreviewKey(null);
                   }}
                   className={`w-full text-left px-6 py-4 flex items-center justify-between transition-colors ${
-                    isActive ? 'bg-[#FF385C]/5 border-l-4 border-l-[#FF385C]' : 'hover:bg-[#F7F7F7]/50 border-l-4 border-l-transparent'
+                    isActive ? 'bg-[#2563EB]/5 border-l-4 border-l-[#2563EB]' : 'hover:bg-[#F7F7F7]/50 border-l-4 border-l-transparent'
                   }`}
                 >
                   <div>
@@ -281,12 +281,12 @@ export function ArchivingWorkspace({ bundle, userRole }: ArchivingWorkspaceProps
                       accept=".pdf,.jpg,.jpeg,.png"
                       className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
                     />
-                    <Upload className="h-8 w-8 text-[#FF385C] mx-auto mb-2" />
+                    <Upload className="h-8 w-8 text-[#2563EB] mx-auto mb-2" />
                     <p className="text-sm font-bold text-[#222222]">Klik atau Seret Berkas Di Sini</p>
                     <p className="text-xs text-[#717171] mt-1">Hanya mendukung format PDF, JPG, dan PNG (Maksimal 5 MB)</p>
                     {isPending && (
                       <div className="absolute inset-0 bg-white/70 flex items-center justify-center rounded-xl">
-                        <Loader2 className="h-6 w-6 animate-spin text-[#FF385C]" />
+                        <Loader2 className="h-6 w-6 animate-spin text-[#2563EB]" />
                       </div>
                     )}
                   </div>
@@ -302,7 +302,7 @@ export function ArchivingWorkspace({ bundle, userRole }: ArchivingWorkspaceProps
                       {activePermohonan.scanFiles.map((file) => (
                         <div key={file.fileId} className="flex items-center justify-between p-3 border border-[#DDDDDD] rounded-xl text-sm">
                           <div className="flex items-center gap-2 overflow-hidden">
-                            <FileText className="h-5 w-5 text-[#FF385C] flex-shrink-0" />
+                            <FileText className="h-5 w-5 text-[#2563EB] flex-shrink-0" />
                             <div className="truncate">
                               <p className="font-bold text-[#222222] truncate">{file.fileName}</p>
                               <p className="text-[10px] text-[#717171] font-medium">
@@ -314,7 +314,7 @@ export function ArchivingWorkspace({ bundle, userRole }: ArchivingWorkspaceProps
                             <Button
                               variant="ghost"
                               onClick={() => setPreviewKey(file.storageKey)}
-                              className="text-[#FF385C] hover:text-[#E31C5F] hover:bg-[#FF385C]/5 p-2 h-9 w-9 rounded-lg"
+                              className="text-[#2563EB] hover:text-[#1D4ED8] hover:bg-[#2563EB]/5 p-2 h-9 w-9 rounded-lg"
                               title="Preview File"
                             >
                               <Eye className="h-4 w-4" />
@@ -410,7 +410,7 @@ export function ArchivingWorkspace({ bundle, userRole }: ArchivingWorkspaceProps
             <Button
               onClick={handleApproveArchive}
               disabled={isPending || !is100Percent}
-              className="flex-1 sm:flex-none bg-[#FF385C] hover:bg-[#E31C5F] text-white font-semibold rounded-lg h-11 px-8 flex items-center justify-center gap-1.5 shadow-md disabled:opacity-50"
+              className="flex-1 sm:flex-none bg-[#2563EB] hover:bg-[#1D4ED8] text-white font-semibold rounded-lg h-11 px-8 flex items-center justify-center gap-1.5 shadow-md disabled:opacity-50 cursor-pointer"
             >
               {isPending ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-5 w-5" />}
               Setujui Arsip Bundle

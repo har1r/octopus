@@ -275,19 +275,23 @@ export function MonitoringWorkspace({ bundle, userRole }: MonitoringWorkspacePro
                   </div>
                 </div>
 
-                {/* 3. Mutasi Sebagian Details */}
-                {activePermohonan.serviceType === 'MUTASI_SEBAGIAN' && activePermohonan.details && activePermohonan.details.length > 0 && (
+                {/* 3. Mutasi Sebagian & Objek Pajak Baru Details */}
+                {(activePermohonan.serviceType === 'MUTASI_SEBAGIAN' || activePermohonan.serviceType === 'OBJEK_PAJAK_BARU') && activePermohonan.details && activePermohonan.details.length > 0 && (
                   <div className="border border-[#DDDDDD] rounded-xl overflow-hidden">
                     <div className="bg-[#F7F7F7] px-4 py-2 border-b border-[#DDDDDD]">
                       <h5 className="text-xs font-bold text-[#222222] uppercase tracking-wider">
-                        Rincian Pecahan Objek Pajak Baru ({activePermohonan.details.length} Calon OP)
+                        {activePermohonan.serviceType === 'OBJEK_PAJAK_BARU'
+                          ? 'Rincian Objek Pajak Baru'
+                          : `Rincian Pecahan Objek Pajak Baru (${activePermohonan.details.length} Calon OP)`}
                       </h5>
                     </div>
                     <div className="divide-y divide-[#DDDDDD]">
                       {activePermohonan.details.map((detail: any, dIdx: number) => (
                         <div key={dIdx} className="p-4 text-xs space-y-2">
                           <div className="flex items-center justify-between">
-                            <span className="font-bold text-[#FF385C]">Calon OP #{dIdx + 1}</span>
+                            <span className="font-bold text-[#FF385C]">
+                              {activePermohonan.serviceType === 'OBJEK_PAJAK_BARU' ? 'Data Objek Baru' : `Calon OP #${dIdx + 1}`}
+                            </span>
                             <span className="text-[10px] font-bold px-2 py-0.5 bg-[#F0F0F0] text-[#717171] rounded-md">
                               Bukti: {detail.ownershipProof}
                             </span>
